@@ -5,6 +5,7 @@
 #include <queue>
 #include <thread>
 #include <mutex>
+#include <iostream>
 
 using std::queue;
 using std::string;
@@ -29,6 +30,6 @@ private:
 	SOCKET _serverSocket;
 	queue<string> _msg;
 	mutex mtx;
-	unique_lock<mutex> _ul = unique_lock<mutex>(mtx, defer_lock);
+	unique_lock<mutex> _ul = unique_lock<mutex>(mtx, std::defer_lock);
 };
 
