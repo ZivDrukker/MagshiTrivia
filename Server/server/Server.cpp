@@ -16,6 +16,8 @@ Server::Server()
 
 	if (_serverSocket == INVALID_SOCKET)
 		throw std::exception(__FUNCTION__ " - socket");
+
+	thread msgHandler(&Server::handleMessage, this);
 }
 
 Server::~Server()
@@ -94,20 +96,25 @@ void Server::accept()
 
 void Server::clientHandler(SOCKET clientSocket)
 {
-	_ul.lock();
 
 	try
 	{
+		/*
 		string s = "Welcome! What is your name (4 bytes)? ";
 		::send(clientSocket, s.c_str(), s.size(), 0);  // last parameter: flag. for us will be 0.
-
-		char m[5];
+		*/
+		char m[BUFFER_SIZE];
 		::recv(clientSocket, m, 4, 0);
-		m[4] = 0;
-		cout << "Client name is: " << m << endl;
 
-		s = "Bye";
-		::send(clientSocket, s.c_str(), s.size(), 0);
+		_ul.lock();
+		_msg.push(m);
+		_ul.unlock();
+
+		//m[4] = 0;
+		//cout << "Client name is: " << m << endl;
+
+		//s = "Bye";
+		//::send(clientSocket, s.c_str(), s.size(), 0);
 		
 		// Closing the socket (in the level of the TCP protocol)
 		::closesocket(clientSocket); 
@@ -118,6 +125,28 @@ void Server::clientHandler(SOCKET clientSocket)
 		::closesocket(clientSocket);
 	}
 
-	_ul.lock();
+}
+
+
+void Server::handleMessage()
+{
+	while (true)
+	{
+		_ul.lock();
+
+		if (!_msg.empty())
+		{
+			string msg = _msg.front();
+			_msg.pop();
+
+			int code = atoi(msg.substr(0, 3).c_str());
+
+			switch (code)
+			{
+			case SIGN_IN:
+				break;
+			}
+		}
+	}
 }
 
