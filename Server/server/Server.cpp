@@ -2,6 +2,7 @@
 #include <exception>
 #include <iostream>
 #include <string>
+#include <istream>
 
 using namespace std;
 
@@ -145,8 +146,75 @@ void Server::handleMessage()
 			{
 			case SIGN_IN:
 				break;
+
+			case SIGN_OUT:
+				break;
+
+			case SIGN_UP:
+				break;
+
+			case ROOMS_REQ:
+				break;
+
+			case ROOMS_USER:
+				break;
+
+			case ROOM_JOIN_REQ:
+				break;
+
+			case ROOM_LEAVE_REQ:
+				break;
+
+			case ROOM_CREATE_REQ:
+				break;
+
+			case ROOM_CREATE_REPLY:
+				break;
+
+			case ROOM_CLOSE_REQ:
+				break;
+
+			case GAME_LEAVE_MSG:
+				break;
+
+			case GAME_SATRT:
+				break;
+			
+			case ANSWER_SEND:
+				break;
+
+			case HIGH_SCORES_REQ:
+				break;
+			
+			case PERSONAL_STATUS_REQ:
+				break;
+			
+			case EXIT:
+				break;
+
+			default:
+				cout << "hey ucf if you get here you are the best!!!\n https://www.youtube.com/watch?v=X9QfZU3xbDk" << endl;
+				break;
 			}
 		}
 	}
 }
 
+vector<string> split(string &str, string splitter, char delim = '#')
+{
+	vector<string> words;
+	std::stringstream ss(str);
+	std::string token;
+	while (getline(ss, token, delim)) {
+		words.push_back(token);
+	}
+
+	for (unsigned int i = 0; i < words.size(); i++)
+	{
+		if (words[i] == "")
+		{
+			words.erase(words.begin() + i);
+		}
+	}
+	return words;
+}

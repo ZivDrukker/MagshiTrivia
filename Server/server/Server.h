@@ -6,6 +6,12 @@
 #include <thread>
 #include <mutex>
 #include <iostream>
+#include <map>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+#include <sstream>
 
 #define BUFFER_SIZE 16
 
@@ -72,6 +78,7 @@ private:
 	SOCKET _serverSocket;
 	queue<string> _msg;
 	mutex mtx;
+	//map<string, string> _users;
 	unique_lock<mutex> _ul = unique_lock<mutex>(mtx, std::defer_lock);
 };
 
