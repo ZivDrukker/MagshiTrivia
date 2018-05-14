@@ -79,7 +79,7 @@ void Server::accept()
 	//input: socket , sockaddr* addr,int* addrlen
 	//	output: socket -- wait(block) until client connected
 	//
-	SOCKET client_socket = ::accept(_serverSocket, NULL, NULL);
+	client_socket = ::accept(_serverSocket, NULL, NULL);
 
 	if (client_socket == INVALID_SOCKET)
 		throw std::exception(__FUNCTION__);
@@ -106,7 +106,7 @@ void Server::clientHandler(SOCKET clientSocket)
 		::recv(clientSocket, m, 4, 0);
 
 		_ul.lock();
-		_msg.push(m);
+		_msg.push(std::make_pair(m, clientSocket));
 		_ul.unlock();
 
 		//m[4] = 0;
@@ -135,20 +135,25 @@ void Server::handleMessage()
 
 		if (!_msg.empty())
 		{
-			string msg = _msg.front();
+			pair<string,SOCKET> message = _msg.front();
 			_msg.pop();
-
+			string msg = message.first;
+			SOCKET socket = message.second;
 			int code = atoi(msg.substr(0, 3).c_str());
 
+			vector<string> msgs = split(msg, '#');
+			
 			switch (code)
 			{
 			case SIGN_IN:
+				signinHandler(msgs, socket);
 				break;
 
 			case SIGN_OUT:
 				break;
 
 			case SIGN_UP:
+				signupHandler(msgs, socket);
 				break;
 
 			case ROOMS_REQ:
@@ -215,4 +220,66 @@ vector<string> Server::split(string& str, char delim)
 		}
 	}
 	return words;
+}
+
+void Server::signupHandler(vector<string> msgs, SOCKET socket)
+{
+	if(_users.find(msgs[1]) != _users.end())
+	{
+		if (msgs[1].length() >= 4)
+		{
+			if (msgs[2].length() >= 4)
+			{
+				if (msgs[3].length() > 5 && msgs[3].find("@") != std::string::npos && msgs[3].find(".") != std::string::npos)
+				{
+					_users[msgs[1]] = make_pair(msgs[2], msgs[3]);
+					connectedUsers.push_back(msgs[1]);
+					sendMsg("1040", socket);
+				}
+				else
+				{
+					sendMsg("1044", socket);
+				}
+			}
+			else
+			{
+				sendMsg("1041", socket);
+			}
+		}
+		else
+		{
+			sendMsg("1043", socket);
+		}
+	}
+	else
+	{
+		sendMsg("1042", socket);
+	}
+}
+
+void Server::signinHandler(vector<string> msgs, SOCKET socket)
+{
+	if (_users.find(msgs[1]) != _users.end())
+	{
+		if (_users[msgs[1]].first == msgs[2])
+		{
+			if (std::find(connectedUsers.begin(), connectedUsers.end(), msgs[1]) != connectedUsers.end())
+			{
+				sendMsg("1020", socket);
+			}
+			else
+			{
+				sendMsg("1022", socket);
+			}
+		}
+		else
+		{
+			sendMsg("1021", socket);
+		}
+	}
+}
+
+void Server::sendMsg(string toSend, SOCKET client_socket)
+{
+	::send(client_socket, toSend.c_str(), toSend.size(), 0);
 }

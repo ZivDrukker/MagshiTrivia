@@ -61,6 +61,8 @@ using std::unique_lock;
 using std::mutex;
 using std::endl;
 using std::vector;
+using std::map;
+using std::pair;
 
 
 class Server
@@ -76,11 +78,16 @@ private:
 	void clientHandler(SOCKET clientSocket);
 	void handleMessage();
 	vector<string> split(string& str, char delim);
+	void signupHandler(vector<string> msgs, SOCKET socket);
+	void sendMsg(string toSend, SOCKET client_socket);
+	void signinHandler(vector<string> msgs, SOCKET socket);
 
 	SOCKET _serverSocket;
-	queue<string> _msg;
+	queue<pair<string, SOCKET>> _msg;
 	mutex mtx;
-	//map<string, string> _users;
+	map<string, pair<string, string>> _users;
+	vector<string> connectedUsers;
 	unique_lock<mutex> _ul = unique_lock<mutex>(mtx, std::defer_lock);
+	SOCKET client_socket;
 };
 
