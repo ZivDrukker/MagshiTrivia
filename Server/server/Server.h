@@ -5,13 +5,14 @@
 #include <queue>
 #include <thread>
 #include <mutex>
-#include <iostream>
 #include <map>
 #include <vector>
 #include <algorithm>
 #include <iterator>
 #include <iostream>
 #include <sstream>
+#include <exception>
+#include <istream>
 
 #define BUFFER_SIZE 16
 
@@ -58,8 +59,8 @@ using std::cout;
 using std::thread;
 using std::unique_lock;
 using std::mutex;
-
-
+using std::endl;
+using std::vector;
 
 
 class Server
@@ -74,6 +75,7 @@ private:
 	void accept();
 	void clientHandler(SOCKET clientSocket);
 	void handleMessage();
+	vector<string> split(string& str, char delim);
 
 	SOCKET _serverSocket;
 	queue<string> _msg;

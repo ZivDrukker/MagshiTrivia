@@ -1,10 +1,8 @@
 #include "Server.h"
-#include <exception>
-#include <iostream>
-#include <string>
-#include <istream>
 
-using namespace std;
+
+//using namespace std;
+
 
 Server::Server()
 {
@@ -200,7 +198,7 @@ void Server::handleMessage()
 	}
 }
 
-vector<string> split(string &str, string splitter, char delim = '#')
+vector<string> Server::split(string& str, char delim)
 {
 	vector<string> words;
 	std::stringstream ss(str);

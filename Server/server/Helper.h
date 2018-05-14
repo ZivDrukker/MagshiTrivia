@@ -3,6 +3,9 @@
 #include <vector>
 #include <string>
 #include <WinSock2.h>
+#include <iomanip>
+#include <sstream>
+
 
 #pragma comment (lib, "Ws2_32.lib")
 
