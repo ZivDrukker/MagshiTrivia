@@ -77,3 +77,22 @@ std::string Helper::getPaddedNumber(int num, int digits)
 	return ostr.str();
 
 }
+
+vector<string>& Helper::split(string str, char delim)
+{
+	vector<string> words;
+	std::stringstream ss(str);
+	std::string token;
+	while (getline(ss, token, delim)) {
+		words.push_back(token);
+	}
+
+	for (unsigned int i = 0; i < words.size(); i++)
+	{
+		if (words[i] == "")
+		{
+			words.erase(words.begin() + i);
+		}
+	}
+	return words;
+}

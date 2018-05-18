@@ -118,11 +118,12 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Question.cpp" />
-    <ClCompile Include="RecievedMessage.cpp" />
+    <ClCompile Include="ReceivedMessage.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="sqlite3.c" />
+    <ClCompile Include="TriviaServer.cpp" />
     <ClCompile Include="user.cpp" />
     <ClCompile Include="Validator.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
@@ -132,7 +133,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Question.h" />
-    <ClInclude Include="RecievedMessage.h" />
+    <ClInclude Include="ReceivedMessage.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlite3.h" />

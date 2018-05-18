@@ -45,7 +45,10 @@
     <ClCompile Include="Validator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RecievedMessage.cpp">
+    <ClCompile Include="TriviaServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReceivedMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,7 +86,7 @@
     <ClInclude Include="TriviaServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RecievedMessage.h">
+    <ClInclude Include="ReceivedMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
