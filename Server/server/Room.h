@@ -3,6 +3,7 @@
 #include <vector>
 
 using std::vector;
+//class User;
 
 class Room
 {
@@ -15,6 +16,7 @@ public:
 	vector<User*> getUsers();
 	string getUsersListMessage();
 	int getQuestionsNo();
+	int getQuestionTime();
 	string getName();
 
 private:

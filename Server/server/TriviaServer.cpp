@@ -179,6 +179,9 @@ void TriviaServer::handleReceivedMessages()
 		{
 			ReceivedMessage* message = _queReceivedMessages.front();
 			_queReceivedMessages.pop();
+			
+			_mtxReceivedMessage.unlock();
+
 			vector<string> msg = message->getValues();
 			int code = message->getMessageCode();
 
@@ -203,18 +206,25 @@ void TriviaServer::handleReceivedMessages()
 				break;
 
 			case ROOMS_USER:
+				handleGetUserInRoom(message);
 				break;
 
 			case ROOM_JOIN_REQ:
+				handleJoinRoom(message);
 				break;
 
 			case ROOM_LEAVE_REQ:
 				break;
 
 			case ROOM_CREATE_REQ:
-				break;
-
-			case ROOM_CREATE_REPLY:
+				if (handleCreateRoom(message))
+				{
+					::send(message->getSock(), "1140", 4, 0);
+				}
+				else
+				{
+					::send(message->getSock(), "1141", 4, 0);
+				}
 				break;
 
 			case ROOM_CLOSE_REQ:
@@ -258,4 +268,72 @@ void TriviaServer::addReceivedMessages(ReceivedMessage* msg)
 ReceivedMessage * TriviaServer::buildReceivedMessage(SOCKET sock, int code)
 {
 	return new ReceivedMessage(sock, code);
+}
+
+Room* TriviaServer::getRoomById(int id)
+{
+	if (id <= _roomIdSequence && id > 0)
+	{
+		return _roomsList[id];
+	}
+	return nullptr;
+}
+
+bool TriviaServer::handleCreateRoom(ReceivedMessage* msg)
+{
+	if (msg->getUser() == nullptr)
+	{
+		return false;
+	}
+
+	vector<string> values = msg->getValues();
+
+	_roomIdSequence++;
+
+	Room* r = new Room(_roomIdSequence, msg->getUser(), values[0], atoi(values[1].c_str()), atoi(values[2].c_str()), atoi(values[3].c_str()));
+
+	_roomsList.insert(std::make_pair(_roomIdSequence, r));
+
+	return true;
+}
+
+bool TriviaServer::handleJoinRoom(ReceivedMessage* msg)
+{
+	if (msg->getUser() == nullptr)
+	{
+		return false;
+	}
+	
+	vector<string> values = msg->getValues();
+
+	Room* r = getRoomById(atoi(values[0].c_str()));
+
+	if (r == nullptr)
+	{
+		::send(msg->getSock(), "1102", 101, 0);
+		return false;
+	}
+	string toSend = "1100#" + std::to_string(r->getQuestionsNo()) + "#" + std::to_string(r->getQuestionTime());
+	if (!msg->getUser()->joinRoom(r))
+	{
+		::send(msg->getSock(),"1101", 101, 0);
+		return false;
+
+	}
+	else
+	{
+		::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
+	}
+
+	return true;
+}
+
+void TriviaServer::handleGetUserInRoom(ReceivedMessage* msg)
+{
+	vector<string> values = msg->getValues();
+
+	Room* r = getRoomById(atoi(values[0].c_str()));
+	string toSend = r->getUsersListMessage();
+
+	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
 }

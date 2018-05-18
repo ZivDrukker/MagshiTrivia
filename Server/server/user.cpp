@@ -45,3 +45,12 @@ bool User::createRoom(string, int, int, int)
 {
 	return false;
 }
+
+bool User::joinRoom(Room* r)
+{
+	if (r->joinRoom(this))
+	{
+		return true;
+	}
+	return false;
+}

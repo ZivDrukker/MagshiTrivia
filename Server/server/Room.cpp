@@ -1,6 +1,6 @@
 #include "Room.h"
 
-Room::Room(int id, User* admin, string name, int maxUser, int qTime, int qNo)
+Room::Room(int id, User* admin, string name, int maxUser, int qNo, int qTime)
 {
 	_id = id;
 	_admin = admin;
@@ -17,10 +17,21 @@ bool Room::joinRoom(User* user)
 	{
 		if (_users[i] == user)
 		{
-			return true;
+			return false;
 		}
 	}
-	return false;
+	if (_users.size() == _maxUsers)
+	{
+		return false;
+	}
+
+	_users.push_back(user);
+
+	string toSend = getUsersListMessage();
+
+	sendMessage(toSend);
+	
+	return true;
 }
 
 void Room::leaveRoom(User* user)
@@ -69,6 +80,11 @@ string Room::getUsersListMessage()
 int Room::getQuestionsNo()
 {
 	return _questionNo;
+}
+
+int Room::getQuestionTime()
+{
+	return _questionTime;
 }
 
 string Room::getName()

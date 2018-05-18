@@ -8,6 +8,7 @@
 #include <queue>
 #include <thread>
 #include "Validator.h"
+#include "Room.h"
 
 #define PORT 1337
 
@@ -101,5 +102,7 @@ private:
 	map<int, Room*> _roomsList;
 	mutex _mtxReceivedMessage;
 	queue<ReceivedMessage*> _queReceivedMessages;
+
+	int _roomIdSequence = 0;
 
 };
