@@ -7,6 +7,7 @@
 #include <mutex>
 #include <queue>
 #include <thread>
+#include "Validator.h"
 
 #define PORT 1337
 
@@ -55,6 +56,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::thread;
+using std::pair;
 
 class TriviaServer
 {
@@ -93,7 +95,8 @@ private:
 	Room* getRoomById(int);
 
 	SOCKET _socket;
-	map<SOCKET, User*>_connectedUsers;
+	map<SOCKET, User*> _connectedUsers;
+	map<string, string> _users;
 	//DataBase _db;						!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	map<int, Room*> _roomsList;
 	mutex _mtxReceivedMessage;

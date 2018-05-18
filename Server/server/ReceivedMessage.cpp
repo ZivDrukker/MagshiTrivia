@@ -4,6 +4,7 @@ ReceivedMessage::ReceivedMessage(SOCKET sock, int msgCode)
 {
 	_sock = sock;
 	_messageCode = msgCode;
+	_values = getValues();
 }
 
 ReceivedMessage::ReceivedMessage(SOCKET sock, int msgCode, vector<string> values)

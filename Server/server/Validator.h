@@ -3,7 +3,10 @@
 #include <iostream>
 
 using std::string;
-
-static bool isPasswordValid(string);
-static bool isUsernameValid(string);
-static bool isEmailValid(string);
+class Validator
+{
+public:
+	static bool isPasswordValid(string);
+	static bool isUsernameValid(string);
+	static bool isEmailValid(string);
+};

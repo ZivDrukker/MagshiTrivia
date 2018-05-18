@@ -106,6 +106,146 @@ void TriviaServer::clientHandler(SOCKET sock)
 	addReceivedMessages(buildReceivedMessage(sock, EXIT));
 }
 
+User* TriviaServer::handleSignIn(ReceivedMessage* msg)
+{
+	bool check = true;
+	vector<string> unameAndPass = msg->getValues();
+	if (_users.find(unameAndPass[0]) != _users.end())
+	{
+		if (_users[unameAndPass[0]] == unameAndPass[1])
+		{
+			for (auto it = _connectedUsers.begin(); it != _connectedUsers.end() && check; it++)
+			{
+				if (it->second->getUsername() == unameAndPass[0])
+				{
+					check = false;
+				}
+			}
+
+			if (check)
+			{
+				return new User(unameAndPass[0], msg->getSock());
+			}
+		}
+	}
+	return nullptr;
+}
+
+bool TriviaServer::handleSignUp(ReceivedMessage* msg)
+{
+	vector<string> values = msg->getValues();
+	SOCKET sock = msg->getSock();
+	if (Validator::isPasswordValid(values[1]))
+	{
+		if (Validator::isUsernameValid(values[0]))
+		{
+			if (_users.find(values[0]) == _users.end())
+			{
+				if (Validator::isEmailValid(values[2]))
+				{
+					::send(sock, "1040", 4, 0);
+					return true;
+				}
+				else
+				{
+					::send(sock, "1044", 4, 0);
+				}
+			}
+			else
+			{
+				::send(sock, "1042", 4, 0);
+			}
+		}
+		else
+		{
+			::send(sock, "1043", 4, 0);
+		}
+	}
+	else
+	{
+		::send(sock, "1041", 4, 0);
+	}
+	return false;
+}
+
+void TriviaServer::handleReceivedMessages()
+{
+	User* usr;
+	while (true)
+	{
+		_mtxReceivedMessage.lock();
+
+		if (!_queReceivedMessages.empty())
+		{
+			ReceivedMessage* message = _queReceivedMessages.front();
+			_queReceivedMessages.pop();
+			vector<string> msg = message->getValues();
+			int code = message->getMessageCode();
+
+			switch (code)
+			{
+			case SIGN_IN:
+				usr = handleSignIn(message);
+				if (usr != nullptr)
+				{
+					_connectedUsers.insert(std::make_pair(message->getSock(), usr));
+				}
+				break;
+
+			case SIGN_OUT:
+				break;
+
+			case SIGN_UP:
+				handleSignUp(message);
+				break;
+
+			case ROOMS_REQ:
+				break;
+
+			case ROOMS_USER:
+				break;
+
+			case ROOM_JOIN_REQ:
+				break;
+
+			case ROOM_LEAVE_REQ:
+				break;
+
+			case ROOM_CREATE_REQ:
+				break;
+
+			case ROOM_CREATE_REPLY:
+				break;
+
+			case ROOM_CLOSE_REQ:
+				break;
+
+			case GAME_LEAVE_MSG:
+				break;
+
+			case GAME_SATRT:
+				break;
+
+			case ANSWER_SEND:
+				break;
+
+			case HIGH_SCORES_REQ:
+				break;
+
+			case PERSONAL_STATUS_REQ:
+				break;
+
+			case EXIT:
+				break;
+
+			default:
+				cout << "hey ucf if you get here you are the best!!!\n https://www.youtube.com/watch?v=X9QfZU3xbDk" << endl;
+				break;
+			}
+		}
+	}
+}
+
 void TriviaServer::addReceivedMessages(ReceivedMessage* msg)
 {
 	_mtxReceivedMessage.lock();
