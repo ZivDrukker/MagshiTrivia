@@ -11,14 +11,14 @@ using std::map;
 class Game
 {
 public:
-	Game(const vector<User*>&, int, DataBase&);
+	Game(const vector<User*>&, int, DataBase*);
 	~Game();
 	void sendFirstQuestion();
 	void handleFinishGame();
 	bool handleNextTurn();
 	bool handleAnswerFromUser();
 	bool leaveGame(User*);
-	int getId();
+	//int getId();
 
 private:
 	bool insertGameToDb();
@@ -29,7 +29,7 @@ private:
 	vector<User*> _players;
 	int _questions_no;
 	int _currQuestionIndex;
-	DataBase& _db;
+	DataBase* _db;// needed to be & but not working
 	map<string, int> _results;
 	int _currentTurnAnswer;
 };

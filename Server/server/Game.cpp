@@ -1,10 +1,10 @@
 #include "Game.h"
 
-Game::Game(const vector<User*>& users, int questionsNo, DataBase& db)
+Game::Game(const vector<User*>& users, int questionsNo, DataBase* db)
 {
+	_db = db;
 	_players = users;
 	_questions_no = questionsNo;
-	_db = db;
 }
 
 Game::~Game()
@@ -15,6 +15,20 @@ Game::~Game()
 
 void Game::sendFirstQuestion()
 {
+}
+
+void Game::handleFinishGame()
+{
+}
+
+bool Game::handleNextTurn()
+{
+	return false;
+}
+
+bool Game::handleAnswerFromUser()
+{
+	return false;
 }
 
 bool Game::leaveGame(User* user)
@@ -33,10 +47,19 @@ bool Game::leaveGame(User* user)
 	}
 	return false;
 }
+//
+//int Game::getId()
+//{
+//	return _id;
+//}
 
-int Game::getId()
+bool Game::insertGameToDb()
 {
-	return _id;
+	return false;
+}
+
+void Game::initQuestionsFromDb()
+{
 }
 
 void Game::sendQuestionsToAllUsers()
