@@ -7,14 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
+using System.Net.Sockets;
 
 namespace client
 {
-	public partial class Form1 : Form
+	public partial class GameScreen : Form
 	{
-		public Form1()
+		public GameScreen(NetworkStream socket)//we get a socket to keep the connection alive
 		{
 			InitializeComponent();
+
+			this.sock = socket;
 		}
+		
+		
 	}
 }

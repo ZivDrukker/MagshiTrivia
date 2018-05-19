@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace client
 {
@@ -16,7 +17,9 @@ namespace client
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Form1());
+			Thread log = new Thread(() => Application.Run(new LogForm()));
+			log.Start();
+			Application.Run(new LoginScreen());
 		}
 	}
 }
