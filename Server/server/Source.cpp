@@ -1,7 +1,7 @@
 #pragma comment (lib, "ws2_32.lib")
 
 #include "WSAInitializer.h"
-#include "Server.h"
+#include "TriviaServer.h"
 #include <iostream>
 #include <exception>
 
@@ -12,9 +12,9 @@ int main()
 	try
 	{
 		WSAInitializer wsaInit;
-		Server myServer;
+		TriviaServer myServer;
 
-		myServer.serve(8876);
+		myServer.Server();
 	}
 	catch (exception& e)
 	{

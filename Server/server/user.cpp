@@ -55,3 +55,12 @@ bool User::joinRoom(Room* r)
 	}
 	return false;
 }
+
+void User::leaveRoom()
+{
+	if (_currRoom != nullptr)
+	{
+		_currRoom->leaveRoom(this);
+		clearRoom();
+	}
+}

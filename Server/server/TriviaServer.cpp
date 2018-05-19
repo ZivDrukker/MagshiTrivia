@@ -168,6 +168,18 @@ bool TriviaServer::handleSignUp(ReceivedMessage* msg)
 	return false;
 }
 
+void TriviaServer::handleSignOut(ReceivedMessage* msg)
+{
+	for (auto it = _connectedUsers.begin(); it != _connectedUsers.end(); it++)
+	{
+		if (it->second->getUsername() == msg->getUser()->getUsername())
+		{
+			::closesocket(it->first);
+			delete it->second;
+		}
+	}
+}
+
 void TriviaServer::handleReceivedMessages()
 {
 	User* usr;
@@ -203,6 +215,7 @@ void TriviaServer::handleReceivedMessages()
 				break;
 
 			case ROOMS_REQ:
+				handleGetRooms(message);
 				break;
 
 			case ROOMS_USER:
@@ -214,6 +227,7 @@ void TriviaServer::handleReceivedMessages()
 				break;
 
 			case ROOM_LEAVE_REQ:
+				handleLeaveRoom(message);
 				break;
 
 			case ROOM_CREATE_REQ:
@@ -321,6 +335,19 @@ bool TriviaServer::handleCreateRoom(ReceivedMessage* msg)
 	return true;
 }
 
+bool TriviaServer::handleCloseRoom(ReceivedMessage* msg)
+{
+	int id = msg->getUser()->getRoom()->closeRoom(msg->getUser());
+	if (id == -1)
+	{
+		return false;
+	}
+	
+	Room* r = getRoomById(id);
+	delete r;
+	return true;
+}
+
 bool TriviaServer::handleJoinRoom(ReceivedMessage* msg)
 {
 	if (msg->getUser() == nullptr)
@@ -352,6 +379,12 @@ bool TriviaServer::handleJoinRoom(ReceivedMessage* msg)
 	return true;
 }
 
+bool TriviaServer::handleLeaveRoom(ReceivedMessage* msg)
+{
+	msg->getUser()->leaveRoom();
+	return false;
+}
+
 void TriviaServer::handleGetUserInRoom(ReceivedMessage* msg)
 {
 	vector<string> values = msg->getValues();
@@ -366,7 +399,7 @@ void TriviaServer::handleGetRooms(ReceivedMessage* msg)
 {
 	string toSend = "106";
 	string count = std::to_string(_roomIdSequence);
-	toSend += '##';
+	toSend += "##";
 	toSend += count;
 
 	for (auto it = _roomsList.begin(); it != _roomsList.end(); it++)

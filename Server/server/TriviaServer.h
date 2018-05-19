@@ -75,6 +75,7 @@ private:
 
 	User* handleSignIn(ReceivedMessage*);
 	bool handleSignUp(ReceivedMessage*);
+	void handleSignOut(ReceivedMessage*);
 
 	void handleLeaveGame(ReceivedMessage*);
 	void handleStartGame(ReceivedMessage*);

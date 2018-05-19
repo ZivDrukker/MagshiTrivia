@@ -41,6 +41,7 @@ void Room::leaveRoom(User* user)
 		if (_users[i] == user)
 		{
 			_users.erase(_users.begin() + i);
+			sendMessage(user, "1120");
 		}
 	}
 	sendMessage(user, "The user: " + user->getUsername() + " has left the room!");
@@ -50,10 +51,12 @@ int Room::closeRoom(User* admin)
 {
 	if (_admin == admin)
 	{
+		sendMessage("116");
 		for (unsigned int i = 0; i < _users.size(); i++)
 		{
 			_users.erase(_users.begin() + i);
 		}
+		return _id;
 	}
 	return -1;
 }
