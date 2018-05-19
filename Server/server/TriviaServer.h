@@ -85,6 +85,7 @@ private:
 	bool handleJoinRoom(ReceivedMessage*);
 	bool handleLeaveRoom(ReceivedMessage*);
 	void handleGetUserInRoom(ReceivedMessage*);
+	void handleGetRooms(ReceivedMessage*);
 
 	void handleGetBestScores(ReceivedMessage*);
 	void handleReceivedMessages();

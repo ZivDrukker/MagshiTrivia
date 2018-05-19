@@ -270,6 +270,30 @@ ReceivedMessage * TriviaServer::buildReceivedMessage(SOCKET sock, int code)
 	return new ReceivedMessage(sock, code);
 }
 
+User* TriviaServer::getUserByName(string name)
+{
+	for (auto it = _connectedUsers.begin(); it != _connectedUsers.end(); it++)
+	{
+		if (it->second->getUsername() == name)
+		{
+			return it->second;
+		}
+	}
+	return nullptr;
+}
+
+User * TriviaServer::getUserBySocket(SOCKET sock)
+{
+	for (auto it = _connectedUsers.begin(); it != _connectedUsers.end(); it++)
+	{
+		if (it->first == sock)
+		{
+			return it->second;
+		}
+	}
+	return nullptr;
+}
+
 Room* TriviaServer::getRoomById(int id)
 {
 	if (id <= _roomIdSequence && id > 0)
@@ -334,6 +358,24 @@ void TriviaServer::handleGetUserInRoom(ReceivedMessage* msg)
 
 	Room* r = getRoomById(atoi(values[0].c_str()));
 	string toSend = r->getUsersListMessage();
+
+	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
+}
+
+void TriviaServer::handleGetRooms(ReceivedMessage* msg)
+{
+	string toSend = "106";
+	string count = std::to_string(_roomIdSequence);
+	toSend += '##';
+	toSend += count;
+
+	for (auto it = _roomsList.begin(); it != _roomsList.end(); it++)
+	{
+		toSend += "##";
+		toSend += std::to_string(it->first);
+		toSend += "##";
+		toSend += it->second->getName();
+	}
 
 	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
 }

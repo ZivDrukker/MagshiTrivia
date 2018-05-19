@@ -3,7 +3,6 @@
 #include <vector>
 
 using std::vector;
-//class User;
 
 class Room
 {
