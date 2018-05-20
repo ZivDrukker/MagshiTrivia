@@ -144,6 +144,7 @@ bool TriviaServer::handleSignUp(ReceivedMessage* msg)
 			{
 				if (Validator::isEmailValid(values[2]))
 				{
+					_connectedUsers.insert(std::make_pair(sock, new User(values[0], sock)));
 					::send(sock, "1040", 4, 0);
 					return true;
 				}

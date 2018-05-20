@@ -52,8 +52,8 @@ namespace client
 				sock.Flush();
 
 				//recive answer
-				byte[] bufferIn = new byte[4];
-				int bytesRead = sock.Read(bufferIn, 0, 4);
+				byte[] bufferIn = new byte[4096];
+				int bytesRead = sock.Read(bufferIn, 0, 4096);
 				string input = new ASCIIEncoding().GetString(bufferIn);
 
 				if(input[5] == '0')
