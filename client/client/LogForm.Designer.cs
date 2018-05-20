@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogForm));
 			this.title = new System.Windows.Forms.Label();
 			this.log = new System.Windows.Forms.Label();
 			this.SuspendLayout();
@@ -59,6 +60,7 @@
 			this.ClientSize = new System.Drawing.Size(550, 250);
 			this.Controls.Add(this.log);
 			this.Controls.Add(this.title);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "LogForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "LogForm";

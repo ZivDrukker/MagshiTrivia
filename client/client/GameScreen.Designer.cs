@@ -55,6 +55,7 @@
 			this.joinRoom.TabIndex = 2;
 			this.joinRoom.Text = "Join Room";
 			this.joinRoom.UseVisualStyleBackColor = true;
+			this.joinRoom.Click += new System.EventHandler(this.joinRoom_Click);
 			// 
 			// createRoom
 			// 
@@ -64,6 +65,7 @@
 			this.createRoom.TabIndex = 2;
 			this.createRoom.Text = "Create Room";
 			this.createRoom.UseVisualStyleBackColor = true;
+			this.createRoom.Click += new System.EventHandler(this.createRoom_Click);
 			// 
 			// status
 			// 
@@ -96,8 +98,6 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.MinimumSize = new System.Drawing.Size(400, 70);
-			this.MaximumSize = new System.Drawing.Size(500, 600);
 			this.ClientSize = this.MaximumSize;
 			this.Controls.Add(this.joinRoom);
 			this.Controls.Add(this.createRoom);
@@ -106,6 +106,8 @@
 			this.Controls.Add(this.quit);
 			this.Controls.Add(this.Title);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximumSize = new System.Drawing.Size(500, 600);
+			this.MinimumSize = new System.Drawing.Size(400, 70);
 			this.Name = "GameScreen";
 			this.Text = "MagshiTrivia";
 			this.ResumeLayout(false);

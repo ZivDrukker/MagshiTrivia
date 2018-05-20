@@ -20,7 +20,23 @@ namespace client
 
 			this.sock = socket;
 		}
-		
-		
+
+		private void createRoom_Click(object sender, EventArgs e)
+		{
+			CreateRoom newRoom = new CreateRoom(sock);
+			newRoom.Activate();
+			this.Hide();
+			newRoom.ShowDialog();
+			this.Show();
+		}
+
+		private void joinRoom_Click(object sender, EventArgs e)
+		{
+			JoinRoom roomListing = new JoinRoom(sock);
+			roomListing.Activate();
+			this.Hide();
+			roomListing.ShowDialog();
+			this.Show();
+		}
 	}
 }

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginScreen));
 			this.Title = new System.Windows.Forms.Label();
 			this.signin = new System.Windows.Forms.Button();
 			this.signup = new System.Windows.Forms.Button();
@@ -110,6 +111,7 @@
 			this.Controls.Add(this.signup);
 			this.Controls.Add(this.signin);
 			this.Controls.Add(this.Title);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(400, 70);
 			this.Name = "LoginScreen";
 			this.Text = "Form2";

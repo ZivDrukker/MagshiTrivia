@@ -90,7 +90,6 @@ namespace client
 				this.email.ForeColor = System.Drawing.SystemColors.InactiveCaption;
 				this.email.Text = "Insert email here - FOR SIGN UP ONLY";
 			}
-
 		}
 
 		private void signin_Click(object sender, EventArgs e)
@@ -103,7 +102,7 @@ namespace client
 			HandleSignup();
 		}
 
-		public void HandleSignin()
+		private void HandleSignin()
 		{
 			try
 			{
@@ -112,7 +111,7 @@ namespace client
 				msg = "200" + "##" + this.username.Text + "##" + this.password.Text;
 
 				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.SetLog("Sent: " + msg + "\n");
+				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
 
 				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
 				sock.Write(buffer, 0, msg.Length);
@@ -123,13 +122,15 @@ namespace client
 				int bytesRead = sock.Read(bufferIn, 0, 4);
 				string input = new ASCIIEncoding().GetString(bufferIn);
 
-				log.SetLog(log.GetLog() + "Recived: " + input + "\n\n");
+				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
 				//checking answer
 				if (input == "1020")
 				{
 					GameScreen startGame = new GameScreen(sock);
 					startGame.Activate();
+					this.Hide();
+					startGame.ShowDialog();
 					this.Close();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
 				}
 				else if (input == "1021")
@@ -147,7 +148,7 @@ namespace client
 			}
 		}
 		
-		public void HandleSignup()
+		private void HandleSignup()
 		{
 			try
 			{
@@ -156,7 +157,7 @@ namespace client
 				msg = "203" + "##" + this.username.Text + "##" + this.password.Text + "##" + this.email.Text;
 
 				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.SetLog("Sent: " + msg + "\n");
+				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
 
 				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
 				sock.Write(buffer, 0, msg.Length);
@@ -167,8 +168,7 @@ namespace client
 				int bytesRead = sock.Read(bufferIn, 0, 4);
 				string input = new ASCIIEncoding().GetString(bufferIn);
 
-				log.SetLog(log.GetLog() + "Recived: " + input + "\n\n");
-
+				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 				//checking answer
 				if (input == "1040")
 				{

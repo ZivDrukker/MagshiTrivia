@@ -17,6 +17,7 @@ namespace client
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+			
 			Thread log = new Thread(() => Application.Run(new LogForm()));
 			log.Start();
 			Application.Run(new LoginScreen());
