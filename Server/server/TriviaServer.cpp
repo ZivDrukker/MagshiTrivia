@@ -42,7 +42,8 @@ TriviaServer::~TriviaServer()
 void TriviaServer::Server()
 {
 	bindAndListen();
-
+	thread handleRcv(&TriviaServer::handleReceivedMessages, this);
+	handleRcv.detach();
 	while (true)
 	{
 		cout << "Waiting for client connection request" << endl;
@@ -185,11 +186,13 @@ void TriviaServer::handleReceivedMessages()
 	User* usr;
 	while (true)
 	{
-		_mtxReceivedMessage.lock();
 
 		if (!_queReceivedMessages.empty())
 		{
+			_mtxReceivedMessage.lock();
+
 			ReceivedMessage* message = _queReceivedMessages.front();
+
 			_queReceivedMessages.pop();
 			
 			_mtxReceivedMessage.unlock();
@@ -272,6 +275,15 @@ void TriviaServer::handleReceivedMessages()
 
 void TriviaServer::addReceivedMessages(ReceivedMessage* msg)
 {
+
+	cout << msg->getMessageCode() << " ";
+
+	for (unsigned int i = 0; i < msg->getValues().size(); i++)
+	{
+		cout << msg->getValues()[i] << " ";
+	}
+
+	cout << endl;
 	_mtxReceivedMessage.lock();
 
 	_queReceivedMessages.push(msg);

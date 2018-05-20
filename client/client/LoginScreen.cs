@@ -173,8 +173,9 @@ namespace client
 				if (input == "1040")
 				{
 					GameScreen startGame = new GameScreen(sock);
-					startGame.Activate();
-					this.Close();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
+					startGame.Show();
+					//startGame.Activate();
+					//this.Close();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
 				}
 				else if (input == "1041")
 				{

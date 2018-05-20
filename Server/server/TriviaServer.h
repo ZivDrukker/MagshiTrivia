@@ -12,7 +12,7 @@
 
 #define PORT 1337
 
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 4096
 
 #define SIGN_IN 200
 #define SIGN_OUT 201

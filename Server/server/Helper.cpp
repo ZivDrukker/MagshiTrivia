@@ -80,19 +80,30 @@ std::string Helper::getPaddedNumber(int num, int digits)
 
 vector<string>& Helper::split(string str, char delim)
 {
-	vector<string> words;
+	bool endFound = false;
+	for (unsigned int i = 0; i < str.length() && !endFound; i++)
+	{
+		if (str[i] == -51)
+		{
+			endFound = true;
+			str = str.substr(0, i);
+		}
+	}
+	vector<string>* words = new vector<string>();
 	std::stringstream ss(str);
 	std::string token;
 	while (getline(ss, token, delim)) {
-		words.push_back(token);
+		words->push_back(token);
 	}
 
-	for (unsigned int i = 0; i < words.size(); i++)
+	(*words).erase(words->begin());
+
+	for (unsigned int i = 0; i < words->size(); i++)
 	{
-		if (words[i] == "")
+		if ((*words)[i] == "")
 		{
-			words.erase(words.begin() + i);
+			words->erase(words->begin() + i);
 		}
 	}
-	return words;
+	return *words;
 }

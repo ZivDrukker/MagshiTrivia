@@ -40,6 +40,6 @@ vector<string>& ReceivedMessage::getValues()
 	{
 		return _values;
 	}
-
-	return Helper::split(Helper::getStringPartFromSocket(_sock, BUFFER_SIZE), '#');
+	_values = Helper::split(Helper::getStringPartFromSocket(_sock, BUFFER_SIZE), '#');
+	return _values;
 }

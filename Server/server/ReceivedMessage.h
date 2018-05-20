@@ -3,7 +3,7 @@
 #include "Helper.h"
 #include <vector>
 
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 4096
 
 using std::vector;
 
