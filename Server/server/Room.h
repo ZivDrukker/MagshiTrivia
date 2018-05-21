@@ -29,4 +29,5 @@ private:
 	int _questionNo;
 	string _name;
 	int _id;
+	Game* game;
 };

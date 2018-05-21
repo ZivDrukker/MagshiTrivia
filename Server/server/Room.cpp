@@ -9,6 +9,7 @@ Room::Room(int id, User* admin, string name, int maxUser, int qNo, int qTime)
 	_questionTime = qTime;
 	_questionNo = qNo;
 	_users.push_back(admin);
+	game = nullptr;
 }
 
 bool Room::joinRoom(User* user)

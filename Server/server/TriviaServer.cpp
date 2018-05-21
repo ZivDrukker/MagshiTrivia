@@ -8,7 +8,7 @@ TriviaServer::TriviaServer()
 	{
 		throw std::exception(__FUNCTION__ " - socket");
 	}
-
+	_users.insert(std::make_pair("user", "123456"));
 	//DB constractor activation !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 

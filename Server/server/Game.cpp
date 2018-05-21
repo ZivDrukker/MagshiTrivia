@@ -1,10 +1,11 @@
 #include "Game.h"
 
-Game::Game(const vector<User*>& users, int questionsNo, DataBase* db)
+Game::Game(const vector<User*>& users, int questionsNo, DataBase* db, User* admin)
 {
 	_db = db;
 	_players = users;
 	_questions_no = questionsNo;
+	_admin = admin;
 }
 
 Game::~Game()
@@ -15,10 +16,40 @@ Game::~Game()
 
 void Game::sendFirstQuestion()
 {
+	string toSend = "118";
+	Question* q = _questions.front();
+	_questions.erase(_questions.begin());
+
+	string question = q->getQuestion();
+
+	if (question.length() == 0)
+	{
+		::send(_admin->getSocket(), "1180", 4, 0);
+		return;
+	}
+
+	toSend += question;
+
+	string* answers = q->getAnswers();
+
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		toSend += "##";
+		toSend += answers[i];
+	}
+
+	for (auto it = _players.begin(); it != _players.end(); it++)
+	{
+		::send((*it)->getSocket(), toSend.c_str(), toSend.length(), 0);
+	}
+
 }
 
 void Game::handleFinishGame()
 {
+	//need DB Support
+
+
 }
 
 bool Game::handleNextTurn()

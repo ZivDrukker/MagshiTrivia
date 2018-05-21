@@ -11,7 +11,7 @@ using std::map;
 class Game
 {
 public:
-	Game(const vector<User*>&, int, DataBase*);
+	Game(const vector<User*>&, int, DataBase*, User*);
 	~Game();
 	void sendFirstQuestion();
 	void handleFinishGame();
@@ -32,4 +32,5 @@ private:
 	DataBase* _db;// needed to be & but not working
 	map<string, int> _results;
 	int _currentTurnAnswer;
+	User* _admin;
 };
