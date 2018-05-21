@@ -25,18 +25,18 @@ namespace client
 		{
 			CreateRoom newRoom = new CreateRoom(sock);
 			newRoom.Activate();
-			//this.Hide();
+			this.Hide();
 			newRoom.ShowDialog();
-			newRoom.Show();
+			this.Show();
 		}
 
 		private void joinRoom_Click(object sender, EventArgs e)
 		{
 			JoinRoom roomListing = new JoinRoom(sock);
 			roomListing.Activate();
-			//this.Hide();
-			//roomListing.ShowDialog();
-			roomListing.Show();
+			this.Hide();
+			roomListing.ShowDialog();
+			this.Show();
 		}
 	}
 }

@@ -98,7 +98,8 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = this.MaximumSize;
+			this.MinimumSize = new System.Drawing.Size(400, 70);
+			this.ClientSize = new System.Drawing.Size(500, 600);
 			this.Controls.Add(this.joinRoom);
 			this.Controls.Add(this.createRoom);
 			this.Controls.Add(this.status);
@@ -106,8 +107,6 @@
 			this.Controls.Add(this.quit);
 			this.Controls.Add(this.Title);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximumSize = new System.Drawing.Size(500, 600);
-			this.MinimumSize = new System.Drawing.Size(400, 70);
 			this.Name = "GameScreen";
 			this.Text = "MagshiTrivia";
 			this.ResumeLayout(false);

@@ -128,10 +128,10 @@ namespace client
 				if (input == "1020")
 				{
 					GameScreen startGame = new GameScreen(sock);
-					startGame.Activate();
 					this.Hide();
+					startGame.Activate();
 					startGame.ShowDialog();
-					this.Close();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
+					this.Show();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
 				}
 				else if (input == "1021")
 				{
@@ -169,13 +169,15 @@ namespace client
 				string input = new ASCIIEncoding().GetString(bufferIn);
 
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+
 				//checking answer
 				if (input == "1040")
 				{
 					GameScreen startGame = new GameScreen(sock);
-					startGame.Show();
-					//startGame.Activate();
-					//this.Close();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
+					this.Hide();
+					startGame.Activate();
+					startGame.ShowDialog();
+					this.Show();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
 				}
 				else if (input == "1041")
 				{
