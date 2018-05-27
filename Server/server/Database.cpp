@@ -4,7 +4,7 @@ vector<string*> _tableSave;
 
 DataBase::DataBase()
 {
-	_rc = sqlite3_open("database.db", &_db);
+	_rc = sqlite3_open("trivia.db", &_db);
 
 	checkErr();
 }
@@ -20,7 +20,7 @@ void DataBase::checkErr()
 {
 	if (_rc)
 	{
-		cout << "Can't open databse 'database.db' errMsg = " << sqlite3_errmsg(_db) << endl;
+		cout << "Can't open databse 'trivia.db' errMsg = " << sqlite3_errmsg(_db) << endl;
 		sqlite3_close(_db);
 		system("pause");
 	}
@@ -28,7 +28,7 @@ void DataBase::checkErr()
 
 bool DataBase::isUserExists(string username)
 {
-	_rc = sqlite3_exec(_db, "Select uname from Users;", callback, 0, &_zErrMsg);
+	_rc = sqlite3_exec(_db, "Select username from t_users;", callback, 0, &_zErrMsg);
 
 	if (_tableSave.size() == 0)
 	{
@@ -41,7 +41,7 @@ bool DataBase::isUserExists(string username)
 
 bool DataBase::addNewUser(string uname, string password, string email)
 {
-	_rc = sqlite3_exec(_db, string("insert into users(uname, password, email) values('" + uname + ", '" + password + "' + '" + email + "'');").c_str(), NULL, 0, &_zErrMsg);
+	_rc = sqlite3_exec(_db, string("insert into t_users(username, password, email) values('" + uname + ", '" + password + "' + '" + email + "'');").c_str(), NULL, 0, &_zErrMsg);
 
 	checkErr();
 	return false;
@@ -49,7 +49,7 @@ bool DataBase::addNewUser(string uname, string password, string email)
 
 bool DataBase::isUserAndPassMatch(string uname, string pass)
 {
-	string toCheck = "select * from User where uname == '" + uname + "' and pass == '" + pass + "';";
+	string toCheck = "select * from t_users where username == '" + uname + "' and password == '" + pass + "';";
 	_rc = sqlite3_exec(_db, toCheck.c_str() , callback, 0, &_zErrMsg);
 
 	if (_tableSave.size() >= 1)
@@ -66,7 +66,7 @@ bool DataBase::isUserAndPassMatch(string uname, string pass)
 
 vector<Question*> DataBase::initQuestions(int num)
 {
-	_rc = sqlite3_exec(_db, "Select * from questions;", callback, 0, &_zErrMsg);
+	_rc = sqlite3_exec(_db, "Select * from t_questions;", callback, 0, &_zErrMsg);
 	vector<Question*>* qs = new vector<Question*>();
 
 	for (int i = 0; i < num; i++)
@@ -78,6 +78,48 @@ vector<Question*> DataBase::initQuestions(int num)
 	_tableSave.clear();
 	checkErr();
 	return *qs;
+}
+
+vector<string> DataBase::getBestScores()
+{
+	
+	vector<string>* users = new vector<string>();
+
+	_rc = sqlite3_exec(_db, "select username, sum(is_correct) from t_players_answers group by username order by sum(is_correct) desc;", callback, 0, &_zErrMsg);
+
+	if (_tableSave.size() != 0)
+	{
+		for (int i = 0; i < (_tableSave.size() > 5 ? 5 : _tableSave.size()); i++)
+		{
+			users->push_back(_tableSave[i][0] + ": " + _tableSave[i][1]);
+		}
+	}
+
+	checkErr();
+	return *users;
+}
+
+vector<string> DataBase::getPersonalStatus(string username)
+{
+	vector<string>* stats = new vector<string>();
+
+	_rc = sqlite3_exec(_db, string("select count(distinct game_id), sum(is_correct), (count(is_correct) - sum(is_correct)), round(avg(answer_time), 3) from t_players_answers where username='" + username + "';").c_str(), callback, 0, &_zErrMsg);
+
+	stats->push_back("Number of games: " + _tableSave[0][0]);
+	stats->push_back("Number of correct answers: " + _tableSave[0][1]);
+	stats->push_back("Number of worng answers: " + _tableSave[0][2]);
+	stats->push_back("Avarage time per answer: " + _tableSave[0][3]);
+
+	checkErr();
+	return *stats;
+}
+
+bool DataBase::updateGameStatus(int id)
+{
+	_rc = sqlite3_exec(_db, string("update t_games set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(id) + "';").c_str(), callback, 0, &_zErrMsg);
+	
+	checkErr();
+	return !_rc;
 }
 
 
