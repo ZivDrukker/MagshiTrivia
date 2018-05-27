@@ -56,7 +56,29 @@ namespace client
 				int bytesRead = sock.Read(bufferIn, 0, 4096);
 				string input = new ASCIIEncoding().GetString(bufferIn);
 
+				input = input.Substring(0, input.IndexOf('\0'));
+
 				List<string> reply = Program.StrSplit(input, '#');
+
+				for(int i = 0; i < reply.Count; i++)
+				{
+					if(reply[i] == "")
+					{
+						reply.Remove("");
+					}
+				}
+
+
+				int numOfRooms = Int32.Parse(reply[0]);
+
+
+
+				rooms.Items.Add("hey there");
+
+				for(int i = 0; i < numOfRooms; i++)
+				{
+					rooms.Items.Add(reply[i * 2] + reply[(i * 2) + 1]);
+				}
 
 				if (reply[1] == "0")
 				{
@@ -110,7 +132,10 @@ namespace client
 				int bytesRead = sock.Read(bufferIn, 0, 4096);
 				string input = new ASCIIEncoding().GetString(bufferIn);
 
+				input = input.Substring(0, input.IndexOf('\0'));
+
 				List<string> reply = Program.StrSplit(input, '#');
+
 
 				if (reply[0] == "1100")
 				{
@@ -138,9 +163,84 @@ namespace client
 			}
 		}
 
+
+
+		private void HandleUsersRequest()
+		{
+			try
+			{
+				//send request
+				string msg = "207";
+
+				if (rooms.Text != "")
+				{
+					msg = msg + "#" + roomsDic[rooms.Text];
+				}
+				else
+				{
+					msg += "#-1";//expecting error code in return
+				}
+
+				var log = Application.OpenForms.OfType<LogForm>().Single();
+				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+
+				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
+				sock.Write(buffer, 0, msg.Length);
+				sock.Flush();
+
+				//recive answer
+				byte[] bufferIn = new byte[4096];
+				int bytesRead = sock.Read(bufferIn, 0, 4096);
+				string input = new ASCIIEncoding().GetString(bufferIn);
+
+				input = input.Substring(0, input.IndexOf('\0'));
+
+				List<string> reply = Program.StrSplit(input, '#');
+
+				int numOfUser = Int32.Parse(reply[1]);
+
+				alert.Text = "";
+				for (int i = 0; i < numOfUser; i++)
+				{
+					alert.ForeColor = System.Drawing.Color.Black;
+					alert.Text += " " + reply[i+1];
+				}
+
+				if (reply[0] == "1100")
+				{
+					//WaitForRoom waiting = new WaitForRoom(sock);
+					//this.Hide();
+					//waiting.ShowDialog();
+					//this.Show();
+				}
+				else if (reply[0] == "1101")
+				{
+					this.alert.Text = "Room is full!";
+				}
+				else
+				{
+					this.alert.Text = "Room does not exist!";
+				}
+
+				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+
+
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.ToString());
+			}
+		}
+
+
 		private void JoinRoom_Load(object sender, EventArgs e)
 		{
 			HandleRoomsList();
+		}
+
+		private void rooms_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

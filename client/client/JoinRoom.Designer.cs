@@ -54,7 +54,7 @@
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
 			this.label1.Location = new System.Drawing.Point(165, 110);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(175, 37);
+			this.label1.Size = new System.Drawing.Size(195, 40);
 			this.label1.TabIndex = 3;
 			this.label1.Text = "Rooms list:";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -64,11 +64,12 @@
 			this.rooms.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
 			this.rooms.ForeColor = System.Drawing.SystemColors.Window;
 			this.rooms.FormattingEnabled = true;
-			this.rooms.ItemHeight = 20;
+			this.rooms.ItemHeight = 22;
 			this.rooms.Location = new System.Drawing.Point(50, 160);
 			this.rooms.Name = "rooms";
-			this.rooms.Size = new System.Drawing.Size(400, 284);
+			this.rooms.Size = new System.Drawing.Size(400, 268);
 			this.rooms.TabIndex = 4;
+			this.rooms.SelectedIndexChanged += new System.EventHandler(this.rooms_SelectedIndexChanged);
 			// 
 			// alert
 			// 
@@ -77,7 +78,7 @@
 			this.alert.ForeColor = System.Drawing.Color.Red;
 			this.alert.Location = new System.Drawing.Point(165, 460);
 			this.alert.Name = "alert";
-			this.alert.Size = new System.Drawing.Size(169, 20);
+			this.alert.Size = new System.Drawing.Size(190, 22);
 			this.alert.TabIndex = 5;
 			this.alert.Text = "No Available Rooms";
 			this.alert.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
