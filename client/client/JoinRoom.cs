@@ -59,26 +59,8 @@ namespace client
 				input = input.Substring(0, input.IndexOf('\0'));
 
 				List<string> reply = Program.StrSplit(input, '#');
-
-				for(int i = 0; i < reply.Count; i++)
-				{
-					if(reply[i] == "")
-					{
-						reply.Remove("");
-					}
-				}
-
-
-				int numOfRooms = Int32.Parse(reply[0]);
-
-
-
-				rooms.Items.Add("hey there");
-
-				for(int i = 0; i < numOfRooms; i++)
-				{
-					rooms.Items.Add(reply[i * 2] + reply[(i * 2) + 1]);
-				}
+				
+				rooms.Items.Add("hey there");//	FOR DEBUG !!!!!!!!!!!!!!!!!!!!!! DELETE
 
 				if (reply[1] == "0")
 				{
@@ -240,7 +222,7 @@ namespace client
 
 		private void rooms_SelectedIndexChanged(object sender, EventArgs e)
 		{
-
+			HandleUsersRequest();
 		}
 	}
 }
