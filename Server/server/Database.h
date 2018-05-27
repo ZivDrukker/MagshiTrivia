@@ -28,6 +28,8 @@ public:
 private:
 	static int callbackCount(void*, int, char**, char**);
 	static int callback(void*, int, char**, char**);
+	void checkErr();
+
 	sqlite3* _db;
 	char* _zErrMsg;
 	int _rc;

@@ -6,9 +6,21 @@ DataBase::DataBase()
 {
 	_rc = sqlite3_open("database.db", &_db);
 
+	checkErr();
+}
+
+DataBase::~DataBase()
+{
+	_rc = sqlite3_close(_db);
+
+	checkErr();
+}
+
+void DataBase::checkErr()
+{
 	if (_rc)
 	{
-		cout << "Can't open databse 'database.db' errMsg = "  << sqlite3_errmsg(_db) << endl;
+		cout << "Can't open databse 'database.db' errMsg = " << sqlite3_errmsg(_db) << endl;
 		sqlite3_close(_db);
 		system("pause");
 	}
@@ -17,10 +29,13 @@ DataBase::DataBase()
 bool DataBase::isUserExists(string username)
 {
 	_rc = sqlite3_exec(_db, "Select uname from Users;", callback, 0, &_zErrMsg);
+
 	if (_tableSave.size() == 0)
 	{
 		return false;
 	}
+
+	checkErr();
 	return true;
 }
 
@@ -28,6 +43,23 @@ bool DataBase::addNewUser(string uname, string password, string email)
 {
 	_rc = sqlite3_exec(_db, string("insert into users(uname, password, email) values('" + uname + ", '" + password + "' + '" + email + "'');").c_str(), NULL, 0, &_zErrMsg);
 
+	checkErr();
+	return false;
+}
+
+bool DataBase::isUserAndPassMatch(string uname, string pass)
+{
+	string toCheck = "select * from User where uname == '" + uname + "' and pass == '" + pass + "';";
+	_rc = sqlite3_exec(_db, toCheck.c_str() , callback, 0, &_zErrMsg);
+
+	if (_tableSave.size() >= 1)
+	{
+		_tableSave.clear();
+		return true;
+	}
+
+	_tableSave.clear();
+	checkErr();
 	return false;
 }
 
@@ -44,6 +76,7 @@ vector<Question*> DataBase::initQuestions(int num)
 	}
 
 	_tableSave.clear();
+	checkErr();
 	return *qs;
 }
 
