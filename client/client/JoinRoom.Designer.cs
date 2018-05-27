@@ -145,5 +145,6 @@
 		private System.Windows.Forms.Button back;
 
 		private System.Net.Sockets.NetworkStream sock;
+		private System.Collections.Generic.Dictionary<string, string> roomsDic;
 	}
 }
