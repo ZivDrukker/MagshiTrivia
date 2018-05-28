@@ -80,6 +80,46 @@ vector<Question*> DataBase::initQuestions(int num)
 	return *qs;
 }
 
+bool DataBase::updateGameStatus(int gameId)
+{
+	_rc = sqlite3_exec(_db, string("update t_games set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(gameId) + "';").c_str(), callback, 0, &_zErrMsg);
+
+	checkErr();
+	return !_rc;
+}
+
+bool DataBase::addAnswerToPlayer(int gameId, string username, int questionId, string answer, bool isCorrect, int answerTime)
+{
+	string toSend = "";
+	if (isCorrect)
+	{
+		toSend += "insert into t_players_answers(game_id, username, question_id, player_answer, is_correct, answer_time) values(";
+		toSend += std::to_string(gameId);
+		toSend += ", '" + username;
+		toSend += "', " + questionId;
+		toSend += ", '" + answer;
+		toSend += "', 1";
+		toSend += "', " + std::to_string(answerTime);
+	}
+	else
+	{
+		toSend += "insert into t_players_answers(game_id, username, question_id, player_answer, is_correct, answer_time) values(";
+		toSend += std::to_string(gameId);
+		toSend += ", '" + username;
+		toSend += "', " + questionId;
+		toSend += ", '" + answer;
+		toSend += "', 0";
+		toSend += "', " + std::to_string(answerTime);
+	}
+
+	_rc = sqlite3_exec(_db, toSend.c_str(), callback, 0, &_zErrMsg);
+
+	checkErr();
+
+	return !_rc;
+
+}
+
 vector<string> DataBase::getBestScores()
 {
 	
@@ -89,7 +129,7 @@ vector<string> DataBase::getBestScores()
 
 	if (_tableSave.size() != 0)
 	{
-		for (int i = 0; i < (_tableSave.size() > 5 ? 5 : _tableSave.size()); i++)
+		for (unsigned int i = 0; i < (_tableSave.size() > 5 ? 5 : _tableSave.size()); i++)
 		{
 			users->push_back(_tableSave[i][0] + ": " + _tableSave[i][1]);
 		}
@@ -114,14 +154,30 @@ vector<string> DataBase::getPersonalStatus(string username)
 	return *stats;
 }
 
-bool DataBase::updateGameStatus(int id)
+int DataBase::insertNewGame()
 {
-	_rc = sqlite3_exec(_db, string("update t_games set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(id) + "';").c_str(), callback, 0, &_zErrMsg);
-	
-	checkErr();
-	return !_rc;
-}
+	string toSend = "insert into t_games(status) values(0);";
+	_rc = sqlite3_exec(_db, toSend.c_str(), NULL, 0, &_zErrMsg);
 
+	checkErr();
+
+	if (_rc)
+	{
+		return -1;
+	}
+
+	toSend = "select * from t_games where game_id = (select max(game_id) from t_games);";
+
+	_rc = sqlite3_exec(_db, toSend.c_str(), callback, 0, &_zErrMsg);
+
+	checkErr();
+	if (_rc)
+	{
+		return -1;
+	}
+
+	return stoi(_tableSave[0][0]);
+}
 
 int DataBase::callbackCount(void* notUsed, int argc, char** argv, char** azCol)
 {

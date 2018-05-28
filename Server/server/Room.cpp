@@ -1,6 +1,6 @@
 #include "Room.h"
 
-Room::Room(int id, User* admin, string name, int maxUser, int qNo, int qTime)
+Room::Room(int id, User* admin, string name, int maxUser, int qNo, int qTime, DataBase* db)
 {
 	_id = id;
 	_admin = admin;
@@ -9,7 +9,8 @@ Room::Room(int id, User* admin, string name, int maxUser, int qNo, int qTime)
 	_questionTime = qTime;
 	_questionNo = qNo;
 	_users.push_back(admin);
-	game = nullptr;
+	_game = nullptr;
+	_db = db;
 }
 
 bool Room::joinRoom(User* user)
@@ -94,6 +95,11 @@ int Room::getQuestionTime()
 string Room::getName()
 {
 	return _name;
+}
+
+void Room::startGame()
+{
+	_game = new Game(_users, _questionNo, _db, _admin);
 }
 
 void Room::sendMessage(string msg)

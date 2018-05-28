@@ -16,13 +16,10 @@ public:
 	void sendFirstQuestion();
 	void handleFinishGame();
 	bool handleNextTurn();
-	bool handleAnswerFromUser();
+	bool handleAnswerFromUser(User*, int, int);
 	bool leaveGame(User*);
-	//int getId();
 
 private:
-	bool insertGameToDb();
-	void initQuestionsFromDb();
 	void sendQuestionsToAllUsers();
 
 	vector<Question*> _questions;
@@ -31,6 +28,7 @@ private:
 	int _currQuestionIndex;
 	DataBase* _db;// needed to be & but not working
 	map<string, int> _results;
-	int _currentTurnAnswer;
+	unsigned int _currentTurnAnswer;
 	User* _admin;
+	int _id;
 };

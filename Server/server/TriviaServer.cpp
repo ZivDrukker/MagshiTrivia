@@ -9,7 +9,7 @@ TriviaServer::TriviaServer()
 		throw std::exception(__FUNCTION__ " - socket");
 	}
 	_users.insert(std::make_pair("user", "123456"));
-	//DB constractor activation !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	_db = new DataBase();
 }
 
 
@@ -182,6 +182,29 @@ void TriviaServer::handleSignOut(ReceivedMessage* msg)
 	}
 }
 
+void TriviaServer::handleLeaveGame(ReceivedMessage* msg)
+{
+	msg->getUser()->leaveGame();
+}
+
+void TriviaServer::handleStartGame(ReceivedMessage* msg)
+{
+	msg->getUser()->getRoom()->startGame();
+}
+
+void TriviaServer::handlePlayerAnswer(ReceivedMessage* msg)
+{
+	if (msg->getUser()->getGame() != nullptr)
+	{
+		vector<string> values = msg->getValues();
+		if (!msg->getUser()->getGame()->handleAnswerFromUser(msg->getUser(), stoi(values[0]), stoi(values[1])))
+		{
+			delete msg->getUser()->getGame();
+			msg->getUser()->setGame(nullptr);
+		}
+	}
+}
+
 void TriviaServer::handleReceivedMessages()
 {
 	User* usr;
@@ -212,6 +235,7 @@ void TriviaServer::handleReceivedMessages()
 				break;
 
 			case SIGN_OUT:
+				handleSignOut(message);
 				break;
 
 			case SIGN_UP:
@@ -246,15 +270,19 @@ void TriviaServer::handleReceivedMessages()
 				break;
 
 			case ROOM_CLOSE_REQ:
+				handleCloseRoom(message);
 				break;
 
 			case GAME_LEAVE_MSG:
+				handleLeaveGame(message);
 				break;
 
 			case GAME_SATRT:
+				handleStartGame(message);
 				break;
 
 			case ANSWER_SEND:
+				handlePlayerAnswer(message);
 				break;
 
 			case HIGH_SCORES_REQ:
@@ -341,7 +369,7 @@ bool TriviaServer::handleCreateRoom(ReceivedMessage* msg)
 
 	_roomIdSequence++;
 
-	Room* r = new Room(_roomIdSequence, msg->getUser(), values[0], atoi(values[1].c_str()), atoi(values[2].c_str()), atoi(values[3].c_str()));
+	Room* r = new Room(_roomIdSequence, msg->getUser(), values[0], atoi(values[1].c_str()), atoi(values[2].c_str()), atoi(values[3].c_str()), _db);
 
 	_roomsList.insert(std::make_pair(_roomIdSequence, r));
 

@@ -9,6 +9,7 @@
 #include <thread>
 #include "Validator.h"
 #include "Room.h"
+#include "Database.h"
 
 #define PORT 1337
 
@@ -100,7 +101,7 @@ private:
 	SOCKET _socket;
 	map<SOCKET, User*> _connectedUsers;
 	map<string, string> _users;
-	//DataBase _db;						!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	DataBase* _db;
 	map<int, Room*> _roomsList;
 	mutex _mtxReceivedMessage;
 	queue<ReceivedMessage*> _queReceivedMessages;

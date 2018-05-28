@@ -64,3 +64,25 @@ void User::leaveRoom()
 		clearRoom();
 	}
 }
+
+int User::closeRoom()
+{
+	int id = _currRoom->closeRoom(this);
+
+	if (id != -1)
+	{
+		_currRoom = nullptr;
+	}
+
+	return id;
+}
+
+bool User::leaveGame()
+{
+	if (_currGame->leaveGame(this))
+	{
+		_currGame = nullptr;
+		return false;
+	}
+	return true;
+}
