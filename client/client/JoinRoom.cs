@@ -44,41 +44,42 @@ namespace client
 				//send request
 				string msg = "205";
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				//var log = Application.OpenForms.OfType<LogForm>().Single();
+				//log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
+				//byte[] buffer = new ASCIIEncoding().GetBytes(msg);
+				//sock.Write(buffer, 0, msg.Length);
+				//sock.Flush();
 
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
+				////recive answer
+				//byte[] bufferIn = new byte[4096];
+				//int bytesRead = sock.Read(bufferIn, 0, 4096);
+				//string input = new ASCIIEncoding().GetString(bufferIn);
 
-				input = input.Substring(0, input.IndexOf('\0'));
+				//input = input.Substring(0, input.IndexOf('\0'));
 
-				List<string> reply = Program.StrSplit(input, '#');
-				
+				//List<string> reply = Program.StrSplit(input, '#');
+
 				rooms.Items.Add("hey there");//	FOR DEBUG !!!!!!!!!!!!!!!!!!!!!! DELETE
+				rooms.Items.Add("hey here");//	FOR DEBUG !!!!!!!!!!!!!!!!!!!!!! DELETE
 
-				if (reply[1] == "0")
-				{
-					this.alert.Text = "No Rooms Found";
-				}
-				else
-				{
-					//	CHECK AND INSERT ROOMS TO LIST CONSIDER MAKING A GLOBAL DATA TYPE TO CONTAIN THE ROOMS
-					for (int i = 2; i < Int32.Parse(reply[1]) * 2; i += 2)
-					{
-						this.rooms.Items.Add(reply[i]);
-						this.roomsDic[reply[i]] = reply[i + 1];
-					}
-				}
+				//if (reply[1] == "0")
+				//{
+				//	this.alert.Text = "No Rooms Found";
+				//}
+				//else
+				//{
+				//	//	CHECK AND INSERT ROOMS TO LIST CONSIDER MAKING A GLOBAL DATA TYPE TO CONTAIN THE ROOMS
+				//	for (int i = 2; i < Int32.Parse(reply[1]) * 2; i += 2)
+				//	{
+				//		this.rooms.Items.Add(reply[i]);
+				//		this.roomsDic[reply[i]] = reply[i + 1];
+				//	}
+				//}
 
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+				//log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
-				
+
 			}
 			catch (Exception e)
 			{
@@ -121,10 +122,10 @@ namespace client
 
 				if (reply[0] == "1100")
 				{
-					//WaitForRoom waiting = new WaitForRoom(sock);
-					//this.Hide();
-					//waiting.ShowDialog();
-					//this.Show();
+					WaitForRoom waiting = new WaitForRoom(sock, false, Int32.Parse(roomsDic[rooms.Text]), rooms.Text, reply[1], reply[2], "");
+					this.Hide();
+					waiting.ShowDialog();
+					this.Show();
 				}
 				else if(reply[0] == "1101")
 				{

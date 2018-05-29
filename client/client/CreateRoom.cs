@@ -129,7 +129,10 @@ namespace client
 				//checking answer
 				if (input == "1140")
 				{
-					MessageBox.Show("Room created!\n\n Room screen soon to come...");
+					WaitForRoom waiting = new WaitForRoom(sock, true, -1, roomName.Text, this.questionNum.Text, this.timePerQuestion.Text, this.playerNum.Text);//	-1 will be a default value for gameID
+					this.Hide();
+					waiting.ShowDialog();
+					this.Show();
 				}
 				else
 				{

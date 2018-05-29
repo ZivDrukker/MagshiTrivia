@@ -62,7 +62,7 @@
 			// rooms
 			// 
 			this.rooms.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-			this.rooms.ForeColor = System.Drawing.SystemColors.Window;
+			this.rooms.ForeColor = System.Drawing.SystemColors.InfoText;
 			this.rooms.FormattingEnabled = true;
 			this.rooms.ItemHeight = 22;
 			this.rooms.Location = new System.Drawing.Point(50, 160);
