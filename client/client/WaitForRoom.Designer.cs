@@ -81,7 +81,7 @@
 			// startOrLeave
 			// 
 			this.startOrLeave.Location = new System.Drawing.Point(475, 400);
-			this.startOrLeave.Name = "start";
+			this.startOrLeave.Name = "startOrLeave";
 			this.startOrLeave.Size = new System.Drawing.Size(250, 75);
 			this.startOrLeave.TabIndex = 6;
 			this.startOrLeave.Text = "Start Room";
@@ -126,10 +126,5 @@
 		private System.Windows.Forms.ListBox users;
 
 		private System.Net.Sockets.NetworkStream sock;
-
-		private string maxPlayers;
-		private string questionNum;
-		private string questionTime;
-		private string nameOfRoom;
 	}
 }

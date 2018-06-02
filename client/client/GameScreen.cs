@@ -41,15 +41,23 @@ namespace client
 
 		private void status_Click(object sender, EventArgs e)
 		{
-			//PersonalStats stats = new PersonalStats(sock);
-			//this.Hide();
-			//stats.ShowDialog();
-			//this.Show();
+			PersonalStats stats = new PersonalStats(sock);
+			this.Hide();
+			stats.ShowDialog();
+			this.Show();
 		}
 
 		private void quit_Click(object sender, EventArgs e)
 		{
 			Application.Exit();//close program!
+		}
+
+		private void bestScores_Click(object sender, EventArgs e)
+		{
+			HighScores topFrags = new HighScores(sock);
+			this.Hide();
+			topFrags.ShowDialog();
+			this.Show();
 		}
 	}
 }

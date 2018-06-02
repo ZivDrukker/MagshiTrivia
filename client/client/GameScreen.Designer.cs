@@ -85,6 +85,7 @@
 			this.bestScores.TabIndex = 2;
 			this.bestScores.Text = "Best Scores";
 			this.bestScores.UseVisualStyleBackColor = true;
+			this.bestScores.Click += new System.EventHandler(this.bestScores_Click);
 			// 
 			// quit
 			// 
