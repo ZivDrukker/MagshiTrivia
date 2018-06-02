@@ -100,7 +100,7 @@ private:
 
 	SOCKET _socket;
 	map<SOCKET, User*> _connectedUsers;
-	map<string, string> _users;
+	//map<string, string> _users;
 	DataBase* _db;
 	map<int, Room*> _roomsList;
 	mutex _mtxReceivedMessage;

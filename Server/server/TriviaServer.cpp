@@ -8,7 +8,7 @@ TriviaServer::TriviaServer()
 	{
 		throw std::exception(__FUNCTION__ " - socket");
 	}
-	_users.insert(std::make_pair("user", "123456"));
+	//_users.insert(std::make_pair("user", "123456"));
 	_db = new DataBase();
 }
 
@@ -111,6 +111,11 @@ User* TriviaServer::handleSignIn(ReceivedMessage* msg)
 {
 	bool check = true;
 	vector<string> unameAndPass = msg->getValues();
+	if (_db->isUserAndPassMatch(unameAndPass[0], unameAndPass[1]))
+	{
+		return new User(unameAndPass[0], msg->getSock());
+	}
+	/*
 	if (_users.find(unameAndPass[0]) != _users.end())
 	{
 		if (_users[unameAndPass[0]] == unameAndPass[1])
@@ -128,7 +133,7 @@ User* TriviaServer::handleSignIn(ReceivedMessage* msg)
 				return new User(unameAndPass[0], msg->getSock());
 			}
 		}
-	}
+		*/
 	return nullptr;
 }
 
@@ -140,11 +145,12 @@ bool TriviaServer::handleSignUp(ReceivedMessage* msg)
 	{
 		if (Validator::isUsernameValid(values[0]))
 		{
-			if (_users.find(values[0]) == _users.end())
+			if (_db->isUserExists(values[0]))
 			{
 				if (Validator::isEmailValid(values[2]))
 				{
-					_connectedUsers.insert(std::make_pair(sock, new User(values[0], sock)));
+					//_connectedUsers.insert(std::make_pair(sock, new User(values[0], sock)));
+					_db->addNewUser(values[0], values[1], values[2]);
 					::send(sock, "1040", 4, 0);
 					return true;
 				}
