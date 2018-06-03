@@ -126,5 +126,8 @@
 		private System.Windows.Forms.ListBox users;
 
 		private System.Net.Sockets.NetworkStream sock;
+
+		private int qTime;
+		private int qNum;
 	}
 }

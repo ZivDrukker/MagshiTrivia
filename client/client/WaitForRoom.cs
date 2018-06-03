@@ -34,6 +34,9 @@ namespace client
 							 + "Number of Questions: " + questionNum + "\n\n\n\n"
 							 + "Time Per Question: " + questionTime;
 
+			qTime = Int32.Parse(questionTime);
+			qNum = Int32.Parse(questionNum);
+
 			this.roomName.Text += roomName;
 		}
 
@@ -200,10 +203,10 @@ namespace client
 					}
 					else
 					{
-						//Game runningGame = new Game(sock, reply);
-						//this.Hide();
-						//runningGame.ShowDialog();
-						//this.Show();
+						Game runningGame = new Game(sock, reply, qTime, qNum);
+						this.Hide();
+						runningGame.ShowDialog();
+						this.Show();
 					}
 				}
 				else

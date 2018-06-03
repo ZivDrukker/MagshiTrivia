@@ -72,7 +72,7 @@ private:
 	void accept();
 	void clientHandler(SOCKET);
 
-	void safeDeleteUserMessage(ReceivedMessage*);
+	//void safeDeleteUserMessage(ReceivedMessage*);
 
 	User* handleSignIn(ReceivedMessage*);
 	bool handleSignUp(ReceivedMessage*);
@@ -90,6 +90,7 @@ private:
 	void handleGetRooms(ReceivedMessage*);
 
 	void handleGetBestScores(ReceivedMessage*);
+	void handleGetPersonalStatus(ReceivedMessage*);
 	void handleReceivedMessages();
 	void addReceivedMessages(ReceivedMessage*);
 	ReceivedMessage* buildReceivedMessage(SOCKET ,int);

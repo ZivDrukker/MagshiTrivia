@@ -115,8 +115,8 @@
 			// 
 			// time
 			// 
-			this.time.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
 			this.time.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.time.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
 			this.time.Location = new System.Drawing.Point(375, 200);
 			this.time.Name = "time";
 			this.time.Size = new System.Drawing.Size(50, 50);
@@ -168,5 +168,13 @@
 		private System.Windows.Forms.Label score;
 		private System.Windows.Forms.Label time;
 		private System.Windows.Forms.Label questionNum;
+		private System.Net.Sockets.NetworkStream sock;
+
+		private int timeLeft;
+		private int qNum;
+		private int qTime;
+		private int scoreCount;
+		private string clickedButton;
+		private System.Windows.Forms.Button current;
 	}
 }

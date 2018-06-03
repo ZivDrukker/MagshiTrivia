@@ -211,6 +211,32 @@ void TriviaServer::handlePlayerAnswer(ReceivedMessage* msg)
 	}
 }
 
+void TriviaServer::handleGetBestScores(ReceivedMessage* msg)
+{
+	string toSend = "124";
+	vector<string> answer = _db->getBestScores();
+
+	for (int i = 0; i < answer.size(); i++)
+	{
+		toSend += "#" + answer[i];
+	}
+
+	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
+}
+
+void TriviaServer::handleGetPersonalStatus(ReceivedMessage* msg)
+{
+	string toSend = "";
+	vector<string> answer = _db->getPersonalStatus(msg->getUser()->getUsername());
+
+	for (int i = 0; i < answer.size(); i++)
+	{
+		toSend += "#" + answer[i];
+	}
+
+	::send(msg->getSock, toSend.c_str, toSend.length(), 0);
+}
+
 void TriviaServer::handleReceivedMessages()
 {
 	User* usr;
