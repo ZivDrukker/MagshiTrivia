@@ -113,16 +113,16 @@ User* TriviaServer::handleSignIn(ReceivedMessage* msg)
 	vector<string> unameAndPass = msg->getValues();
 	if (_db->isUserAndPassMatch(unameAndPass[0], unameAndPass[1]))
 	{
-		for (unsigned int i = 0; i < _connectedUsers.size(); i++)
+		for (auto it = _connectedUsers.begin(); it != _connectedUsers.end(); it++)
 		{
-			if (_connectedUsers[i]->getUsername() == unameAndPass[0])
+			if (it->second->getUsername() == unameAndPass[0])
 			{
 				::send(msg->getSock(), "1022", 4, 0);
 				return nullptr;
 			}
 		}
 		::send(msg->getSock(), "1020", 4, 0);
-		return new User(unameAndPass[0], msg->getSock());
+		return new User(string(unameAndPass[0]), msg->getSock());
 	}
 	else
 	{
@@ -436,6 +436,7 @@ bool TriviaServer::handleJoinRoom(ReceivedMessage* msg)
 		return false;
 	}
 	string toSend = "1100#" + std::to_string(r->getQuestionsNo()) + "#" + std::to_string(r->getQuestionTime());
+
 	if (!msg->getUser()->joinRoom(r))
 	{
 		::send(msg->getSock(),"1101", 101, 0);

@@ -70,15 +70,24 @@ vector<User*> Room::getUsers()
 
 string Room::getUsersListMessage()
 {
-	string names = "108" + _users.size();
-	for (unsigned int i = 0; i < _users.size(); i++)
+	string names = "108#";
+
+	if (_game == nullptr)
 	{
-		names += _users[i]->getUsername();
-		if (i + 1 != _users.size())
+		for (unsigned int i = 0; i < _users.size(); i++)
 		{
-			names += "##";
+			names += _users[i]->getUsername();
+			if (i + 1 != _users.size())
+			{
+				names += "#";
+			}
 		}
 	}
+	else
+	{
+		names = "1080";
+	}
+
 	return names;
 }
 

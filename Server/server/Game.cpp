@@ -83,6 +83,7 @@ void Game::handleFinishGame()
 
 bool Game::handleNextTurn()
 {
+
 	if (_currentTurnAnswer < _players.size())
 	{
 		return false;

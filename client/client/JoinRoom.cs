@@ -34,6 +34,7 @@ namespace client
 
 		private void refresh_Click(object sender, EventArgs e)
 		{
+			this.roomsDic.Clear();
 			HandleRoomsList();
 		}
 
@@ -41,6 +42,7 @@ namespace client
 		{
 			try
 			{
+				this.rooms.Items.Clear();
 				//send request
 				string msg = "205";
 
@@ -67,10 +69,10 @@ namespace client
 				else
 				{
 					//	CHECK AND INSERT ROOMS TO LIST CONSIDER MAKING A GLOBAL DATA TYPE TO CONTAIN THE ROOMS
-					for (int i = 2; i < Int32.Parse(reply[1]) * 2; i += 2)
+					for (int i = 2; i <= Int32.Parse(reply[1]) * 2; i += 2)
 					{
-						this.rooms.Items.Add(reply[i]);
-						this.roomsDic[reply[i]] = reply[i + 1];
+						this.rooms.Items.Add(reply[i + 1]);
+						this.roomsDic[reply[i + 1]] = reply[i];
 					}
 				}
 
@@ -91,9 +93,9 @@ namespace client
 				//send request
 				string msg = "209";
 
-				if(rooms.Text != "")
+				if(rooms.SelectedItem.ToString() != "")
 				{
-					msg = msg + "#" + roomsDic[rooms.Text];
+					msg = msg + "#" + roomsDic[rooms.SelectedItem.ToString()];
 				}
 				else
 				{
@@ -116,22 +118,52 @@ namespace client
 
 				List<string> reply = Program.StrSplit(input, '#');
 
+				if(reply[0] == "108")
+				{
+					//recive answer again
+					bufferIn = new byte[4096];
+					bytesRead = sock.Read(bufferIn, 0, 4096);
+					input = new ASCIIEncoding().GetString(bufferIn);
 
-				if (reply[0] == "1100")
-				{
-					WaitForRoom waiting = new WaitForRoom(sock, false, Int32.Parse(roomsDic[rooms.Text]), rooms.Text, reply[1], reply[2], "");
-					this.Hide();
-					waiting.ShowDialog();
-					this.Show();
-				}
-				else if(reply[0] == "1101")
-				{
-					this.alert.Text = "Room is full!";
+					input = input.Substring(0, input.IndexOf('\0'));
+
+					reply = Program.StrSplit(input, '#');
+
+					if (reply[0] == "1100")
+					{
+						WaitForRoom waiting = new WaitForRoom(sock, false, Int32.Parse(roomsDic[rooms.Text]), rooms.Text, reply[1], reply[2], "");
+						this.Hide();
+						waiting.ShowDialog();
+						this.Show();
+					}
+					else if (reply[0] == "1101")
+					{
+						this.alert.Text = "Room is full!";
+					}
+					else
+					{
+						this.alert.Text = "Room does not exist!";
+					}
 				}
 				else
 				{
-					this.alert.Text = "Room does not exist!";
+					if (reply[0] == "1100")
+					{
+						WaitForRoom waiting = new WaitForRoom(sock, false, Int32.Parse(roomsDic[rooms.Text]), rooms.Text, reply[1], reply[2], "");
+						this.Hide();
+						waiting.ShowDialog();
+						this.Show();
+					}
+					else if (reply[0] == "1101")
+					{
+						this.alert.Text = "Room is full!";
+					}
+					else
+					{
+						this.alert.Text = "Room does not exist!";
+					}
 				}
+				
 
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
@@ -143,8 +175,6 @@ namespace client
 			}
 		}
 
-
-
 		private void HandleUsersRequest()
 		{
 			try
@@ -152,7 +182,7 @@ namespace client
 				//send request
 				string msg = "207";
 
-				if (rooms.Text != "")
+				if (rooms.SelectedItem.ToString() != "")
 				{
 					msg = msg + "#" + roomsDic[rooms.Text];
 				}
@@ -177,29 +207,26 @@ namespace client
 
 				List<string> reply = Program.StrSplit(input, '#');
 
-				int numOfUser = Int32.Parse(reply[1]);
-
-				alert.Text = "";
-				for (int i = 0; i < numOfUser; i++)
+				if (reply[0] != "1080")
 				{
+					string message = "";
+					alert.Text = "";
 					alert.ForeColor = System.Drawing.Color.Black;
-					alert.Text += " " + reply[i+1];
-				}
 
-				if (reply[0] == "1100")
-				{
-					//WaitForRoom waiting = new WaitForRoom(sock);
-					//this.Hide();
-					//waiting.ShowDialog();
-					//this.Show();
+					for (int i = 1; i < reply.Count(); i++)
+					{
+						message += (i != reply.Count() - 1 ? reply[i] + ", " : reply[i]);
+					}
+
+					this.alert.Text = message;
 				}
-				else if (reply[0] == "1101")
+				else if (reply[0] == "1080")//	DOESN'T EXIST IN SERVER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 				{
-					this.alert.Text = "Room is full!";
+					this.alert.Text = "Room doesn't exist!";
 				}
 				else
 				{
-					this.alert.Text = "Room does not exist!";
+					this.alert.Text = "Hi! You broke our program! Not nice... Go away.";
 				}
 
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });

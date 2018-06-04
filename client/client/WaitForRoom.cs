@@ -13,7 +13,7 @@ namespace client
 {
 	public partial class WaitForRoom : Form
 	{
-		public WaitForRoom(NetworkStream socket, bool isAdmin, int roomID, string roomName, string questionNum, string questionTime, string playersNum = "")
+		public WaitForRoom(NetworkStream socket, bool isAdmin, int roomID, string roomName, string questionNum = "", string questionTime = "", string playersNum = "")
 		{
 			InitializeComponent();
 
@@ -24,11 +24,12 @@ namespace client
 				HandleNotAdmin();
 			}
 
-			if (roomID != -1)
-			{
-				roomID = GetRoomID(roomName);
-			}
-			//playersNum = HandleRoomDetails(roomID);//filling up all fields that may be missing and users list
+			//if (roomID != -1)
+			//{
+			//	roomID = GetRoomID(roomName);
+			//}
+
+			playersNum = HandleRoomDetails(GetRoomID(roomName));//filling up all fields that may be missing and users list
 
 			this.info.Text = "Max Number of Players: " + playersNum + "\n\n\n\n"
 							 + "Number of Questions: " + questionNum + "\n\n\n\n"
@@ -65,9 +66,11 @@ namespace client
 
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
+				//usersCount = Int32.Parse(reply[1]);
+
 				//also insert all of the rooms into the GUI
-				for(int i = 2; i < reply.Count(); i++)
-				{
+				for(int i = 1; i <= reply.Count(); i++)
+					{
 					this.users.Items.Add(reply[i]);
 				}
 
@@ -233,6 +236,11 @@ namespace client
 			this.close.Hide();
 			this.startOrLeave.Location = new System.Drawing.Point(275, 400);
 			this.startOrLeave.Text = "Leave Room";
+		}
+
+		private void WaitForRoom_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
