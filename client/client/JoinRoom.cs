@@ -60,9 +60,6 @@ namespace client
 
 				List<string> reply = Program.StrSplit(input, '#');
 
-				rooms.Items.Add("hey there");//	FOR DEBUG !!!!!!!!!!!!!!!!!!!!!! DELETE
-				rooms.Items.Add("hey here");//	FOR DEBUG !!!!!!!!!!!!!!!!!!!!!! DELETE
-
 				if (reply[1] == "0")
 				{
 					this.alert.Text = "No Rooms Found";

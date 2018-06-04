@@ -350,7 +350,9 @@ void TriviaServer::addReceivedMessages(ReceivedMessage* msg)
 
 ReceivedMessage * TriviaServer::buildReceivedMessage(SOCKET sock, int code)
 {
-	return new ReceivedMessage(sock, code);
+	ReceivedMessage* msg = new ReceivedMessage(sock, code);
+	msg->setUser(getUserBySocket(sock));
+	return msg;
 }
 
 User* TriviaServer::getUserByName(string name)

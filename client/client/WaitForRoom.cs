@@ -28,7 +28,7 @@ namespace client
 			{
 				roomID = GetRoomID(roomName);
 			}
-			playersNum = HandleRoomDetails(roomID);//filling up all fields that may be missing and users list
+			//playersNum = HandleRoomDetails(roomID);//filling up all fields that may be missing and users list
 
 			this.info.Text = "Max Number of Players: " + playersNum + "\n\n\n\n"
 							 + "Number of Questions: " + questionNum + "\n\n\n\n"
