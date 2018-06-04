@@ -114,7 +114,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(400, 70);
 			this.Name = "LoginScreen";
-			this.Text = "Form2";
+			this.Text = "Login";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

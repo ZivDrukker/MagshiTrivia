@@ -113,27 +113,22 @@ User* TriviaServer::handleSignIn(ReceivedMessage* msg)
 	vector<string> unameAndPass = msg->getValues();
 	if (_db->isUserAndPassMatch(unameAndPass[0], unameAndPass[1]))
 	{
-		return new User(unameAndPass[0], msg->getSock());
-	}
-	/*
-	if (_users.find(unameAndPass[0]) != _users.end())
-	{
-		if (_users[unameAndPass[0]] == unameAndPass[1])
+		for (unsigned int i = 0; i < _connectedUsers.size(); i++)
 		{
-			for (auto it = _connectedUsers.begin(); it != _connectedUsers.end() && check; it++)
+			if (_connectedUsers[i]->getUsername() == unameAndPass[0])
 			{
-				if (it->second->getUsername() == unameAndPass[0])
-				{
-					check = false;
-				}
-			}
-
-			if (check)
-			{
-				return new User(unameAndPass[0], msg->getSock());
+				::send(msg->getSock(), "1022", 4, 0);
+				return nullptr;
 			}
 		}
-		*/
+		::send(msg->getSock(), "1020", 4, 0);
+		return new User(unameAndPass[0], msg->getSock());
+	}
+	else
+	{
+		::send(msg->getSock(), "1021", 4, 0);
+	}
+
 	return nullptr;
 }
 
@@ -216,7 +211,7 @@ void TriviaServer::handleGetBestScores(ReceivedMessage* msg)
 	string toSend = "124";
 	vector<string> answer = _db->getBestScores();
 
-	for (int i = 0; i < answer.size(); i++)
+	for (unsigned int i = 0; i < answer.size(); i++)
 	{
 		toSend += "#" + answer[i];
 	}
@@ -229,12 +224,12 @@ void TriviaServer::handleGetPersonalStatus(ReceivedMessage* msg)
 	string toSend = "";
 	vector<string> answer = _db->getPersonalStatus(msg->getUser()->getUsername());
 
-	for (int i = 0; i < answer.size(); i++)
+	for (unsigned int i = 0; i < answer.size(); i++)
 	{
 		toSend += "#" + answer[i];
 	}
 
-	::send(msg->getSock, toSend.c_str, toSend.length(), 0);
+	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
 }
 
 void TriviaServer::handleReceivedMessages()
@@ -264,6 +259,7 @@ void TriviaServer::handleReceivedMessages()
 				{
 					_connectedUsers.insert(std::make_pair(message->getSock(), usr));
 				}
+
 				break;
 
 			case SIGN_OUT:

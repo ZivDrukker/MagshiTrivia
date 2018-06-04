@@ -19,8 +19,7 @@ namespace client
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-
-			Application.Run(new GameScreen(null));
+			
 			Thread log = new Thread(() => Application.Run(new LogForm()));
 			log.Start();
 			Application.Run(new LoginScreen());
