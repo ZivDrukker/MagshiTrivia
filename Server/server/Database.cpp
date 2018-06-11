@@ -32,9 +32,11 @@ bool DataBase::isUserExists(string username)
 
 	if (_tableSave.size() == 0)
 	{
+		_tableSave.clear();
 		return false;
 	}
 
+	_tableSave.clear();
 	checkErr();
 	return true;
 }
@@ -106,7 +108,7 @@ vector<Question*> DataBase::initQuestions(int num)
 
 bool DataBase::updateGameStatus(int gameId)
 {
-	_rc = sqlite3_exec(_db, string("update set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(gameId) + "';").c_str(), callback, 0, &_zErrMsg);
+	_rc = sqlite3_exec(_db, string("update set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(gameId) + "';").c_str(), NULL, 0, &_zErrMsg);
 
 	checkErr();
 	return !_rc;
@@ -136,7 +138,7 @@ bool DataBase::addAnswerToPlayer(int gameId, string username, int questionId, st
 		toSend += "', " + std::to_string(answerTime);
 	}
 
-	_rc = sqlite3_exec(_db, toSend.c_str(), callback, 0, &_zErrMsg);
+	_rc = sqlite3_exec(_db, toSend.c_str(), NULL, 0, &_zErrMsg);
 
 	checkErr();
 
@@ -159,6 +161,7 @@ vector<string> DataBase::getBestScores()
 		}
 	}
 
+	_tableSave.clear();
 	checkErr();
 	return *users;
 }
@@ -174,6 +177,7 @@ vector<string> DataBase::getPersonalStatus(string username)
 	stats->push_back("Number of worng answers: " + _tableSave[0][2]);
 	stats->push_back("Avarage time per answer: " + _tableSave[0][3]);
 
+	_tableSave.clear();
 	checkErr();
 	return *stats;
 }
@@ -200,7 +204,11 @@ int DataBase::insertNewGame()
 		return -1;
 	}
 
-	return stoi(_tableSave[0][0]);
+	int x = stoi(_tableSave[0][0]);
+
+	_tableSave.clear();
+
+	return x;
 }
 
 int DataBase::callbackCount(void* notUsed, int argc, char** argv, char** azCol)

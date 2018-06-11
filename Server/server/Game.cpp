@@ -12,13 +12,15 @@ Game::Game(const vector<User*>& users, int questionsNo, DataBase* db, User* admi
 		throw(std::invalid_argument("The game isnt starting"));
 	}
 
-	db->initQuestions(questionsNo);
+	_questions = db->initQuestions(questionsNo);
 
 	for (unsigned int i = 0; i < users.size(); i++)
 	{
 		_results.insert(std::make_pair(users[i]->getUsername(), 0));
 		users[i]->setGame(this);
 	}
+
+	sendFirstQuestion();
 }
 
 Game::~Game()
@@ -29,9 +31,9 @@ Game::~Game()
 
 void Game::sendFirstQuestion()
 {
-	string toSend = "118";
+	string toSend = "118##";
 	Question* q = _questions.front();
-	//_questions.erase(_questions.begin());
+	_questions.erase(_questions.begin());
 
 	string question = q->getQuestion();
 
