@@ -117,29 +117,38 @@ bool DataBase::updateGameStatus(int gameId)
 bool DataBase::addAnswerToPlayer(int gameId, string username, int questionId, string answer, bool isCorrect, int answerTime)
 {
 	string toSend = "";
-	if (isCorrect)
+	if (answer != "")
 	{
-		toSend += "insert into t_players_answers(game_id, username, question_id, player_answer, is_correct, answer_time) values(";
-		toSend += std::to_string(gameId);
-		toSend += ", '" + username;
-		toSend += "', " + questionId;
-		toSend += ", '" + answer;
-		toSend += "', 1";
-		toSend += "', " + std::to_string(answerTime);
-		toSend += ");";
+		if (isCorrect)
+		{
+			toSend += "insert into t_players_answers(game_id, username, question_id, player_answer, is_correct, answer_time) values(";
+			toSend += std::to_string(gameId);
+			toSend += ", '";
+			toSend += username;
+			toSend += "', ";
+			toSend += std::to_string(questionId);
+			toSend += ", '";
+			toSend += answer;
+			toSend += "', 1, ";
+			toSend += std::to_string(answerTime);
+			toSend += ");";
+		}
+		else
+		{
+			toSend += "insert into t_players_answers(game_id, username, question_id, player_answer, is_correct, answer_time) values(";
+			toSend += std::to_string(gameId);
+			toSend += ", '";
+			toSend += username;
+			toSend += "', ";
+			toSend += std::to_string(questionId);
+			toSend += ", '";
+			toSend += answer;
+			toSend += "', 0, ";
+			toSend += std::to_string(answerTime);
+			toSend += ");";
+		}
 	}
-	else
-	{
-		toSend += "insert into t_players_answers(game_id, username, question_id, player_answer, is_correct, answer_time) values(";
-		toSend += std::to_string(gameId);
-		toSend += ", '" + username;
-		toSend += "', " + questionId;
-		toSend += ", '" + answer;
-		toSend += "', 0";
-		toSend += "', " + std::to_string(answerTime);
-		toSend += ");";
-	}
-
+	cout << toSend << endl;
 	_rc = sqlite3_exec(_db, toSend.c_str(), NULL, 0, &_zErrMsg);
 
 	checkErr();
