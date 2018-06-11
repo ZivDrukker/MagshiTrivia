@@ -199,7 +199,7 @@ namespace client
 
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
-				if(this.startOrLeave.Text == "Start Room")
+				if(this.startOrLeave.Text == "Start Game")
 				{
 					if (reply[1] == "0")
 					{

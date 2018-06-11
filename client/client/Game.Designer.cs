@@ -59,6 +59,7 @@
 			this.answer1.TabIndex = 5;
 			this.answer1.Text = "answer1";
 			this.answer1.UseVisualStyleBackColor = true;
+			this.answer1.Click += new System.EventHandler(this.Button_Click);
 			// 
 			// answer2
 			// 
@@ -68,6 +69,7 @@
 			this.answer2.TabIndex = 6;
 			this.answer2.Text = "answer2";
 			this.answer2.UseVisualStyleBackColor = true;
+			this.answer2.Click += new System.EventHandler(this.Button_Click);
 			// 
 			// answer3
 			// 
@@ -77,6 +79,7 @@
 			this.answer3.TabIndex = 7;
 			this.answer3.Text = "answer3";
 			this.answer3.UseVisualStyleBackColor = true;
+			this.answer3.Click += new System.EventHandler(this.Button_Click);
 			// 
 			// answer4
 			// 
@@ -86,6 +89,7 @@
 			this.answer4.TabIndex = 8;
 			this.answer4.Text = "answer4";
 			this.answer4.UseVisualStyleBackColor = true;
+			this.answer4.Click += new System.EventHandler(this.Button_Click);
 			// 
 			// question
 			// 
@@ -151,6 +155,7 @@
 			this.MinimumSize = new System.Drawing.Size(400, 70);
 			this.Name = "Game";
 			this.Text = "Game";
+			this.Load += new System.EventHandler(this.Game_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -172,9 +177,11 @@
 
 		private int timeLeft;
 		private int qNum;
+		private int currQNum;
 		private int qTime;
 		private int scoreCount;
 		private string clickedButton;
 		private System.Windows.Forms.Button current;
+		private System.Collections.Generic.List<string> _reply;
 	}
 }

@@ -126,6 +126,7 @@ bool DataBase::addAnswerToPlayer(int gameId, string username, int questionId, st
 		toSend += ", '" + answer;
 		toSend += "', 1";
 		toSend += "', " + std::to_string(answerTime);
+		toSend += ");";
 	}
 	else
 	{
@@ -136,6 +137,7 @@ bool DataBase::addAnswerToPlayer(int gameId, string username, int questionId, st
 		toSend += ", '" + answer;
 		toSend += "', 0";
 		toSend += "', " + std::to_string(answerTime);
+		toSend += ");";
 	}
 
 	_rc = sqlite3_exec(_db, toSend.c_str(), NULL, 0, &_zErrMsg);

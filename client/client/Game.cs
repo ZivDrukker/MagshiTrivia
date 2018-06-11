@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace client
 {
@@ -18,12 +19,16 @@ namespace client
 			InitializeComponent();
 			sock = socket;
 
+			_reply = reply;
+
 			this.qNum = qNum;
 			this.qTime = qTime;
+			this.currQNum = 1;
 			this.scoreCount = 0;
 			this.current = null;
 
-			HandleQuestions(reply);
+			//this.Show();
+			setGroundForQuestion();
 		}
 
 		private void timer1_Tick(object sender, EventArgs e)
@@ -44,102 +49,99 @@ namespace client
 			}
 		}
 
-		private void HandleQuestions(List<string> reply)
+		private void setGroundForQuestion()
 		{
-			for(int i = 0; i < qNum; i++)
+			timeLeft = qTime;
+			timer1.Start();
+			this.question.Text = _reply[1];
+			this.questionNum.Text = currQNum.ToString();
+			currQNum++;
+			this.score.Text = scoreCount.ToString();
+			this.answer1.Text = _reply[2];
+			this.answer2.Text = _reply[3];
+			this.answer3.Text = _reply[4];
+			this.answer4.Text = _reply[5];
+		}
+
+		private void HandleQuestions()
+		{
+			try
 			{
-				timeLeft = qTime * 1000;
-				timer1.Start();
-				this.question.Text = reply[1];
-				this.questionNum.Text = i.ToString();
-				this.score.Text = scoreCount.ToString();
-				this.answer1.Text = reply[2];
-				this.answer2.Text = reply[3];
-				this.answer3.Text = reply[4];
-				this.answer4.Text = reply[5];
+				//send request
+				string msg = "219#" + this.clickedButton + "#" + (this.qTime - this.timeLeft).ToString();
 
-				while(this.clickedButton == null)
+				var log = Application.OpenForms.OfType<LogForm>().Single();
+				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+
+				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
+				sock.Write(buffer, 0, msg.Length);
+				sock.Flush();
+
+				//recive answer
+				byte[] bufferIn = new byte[4096];
+				int bytesRead = sock.Read(bufferIn, 0, 4096);
+				string input = new ASCIIEncoding().GetString(bufferIn);
+
+				input = input.Substring(0, input.IndexOf('\0'));
+
+				_reply = Program.StrSplit(input, '#');
+
+				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+
+				if (_reply[0] == "120")
 				{
-					continue;
+					if (_reply[1] == "1")
+					{
+						this.scoreCount++;
+						if (this.current != null)
+						{
+							this.current.BackColor = System.Drawing.Color.Green;
+						}
+					}
+					else
+					{
+						if (this.current != null)
+						{
+							this.current.BackColor = System.Drawing.Color.Red;
+						}
+					}
+					this.current = null;
+
+					this.score.Text = "Score: " + this.scoreCount + "/" + currQNum.ToString();
 				}
-
-				try
+				
+				while(_reply[0] != "118")
 				{
-					//send request
-					string msg = "219#" + this.clickedButton + "#" + (this.qTime - (this.timeLeft / 1000)).ToString();
-
-					var log = Application.OpenForms.OfType<LogForm>().Single();
-					log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
-
-					byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-					sock.Write(buffer, 0, msg.Length);
-					sock.Flush();
-
 					//recive answer
-					byte[] bufferIn = new byte[4096];
-					int bytesRead = sock.Read(bufferIn, 0, 4096);
-					string input = new ASCIIEncoding().GetString(bufferIn);
+					bufferIn = new byte[4096];
+					bytesRead = sock.Read(bufferIn, 0, 4096);
+					input = new ASCIIEncoding().GetString(bufferIn);
 
 					input = input.Substring(0, input.IndexOf('\0'));
 
-					reply = Program.StrSplit(input, '#');
+					_reply = Program.StrSplit(input, '#');
 
-					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
-
-					if (reply[0] == "120")
-					{
-						if (reply[1] == "1")
-						{
-							this.scoreCount++;
-							if (this.current != null)
-							{
-								this.current.BackColor = System.Drawing.Color.Green;
-							}
-						}
-						else
-						{
-							if (this.current != null)
-							{
-								this.current.BackColor = System.Drawing.Color.Red;
-							}
-						}
-						this.current = null;
-
-						this.score.Text = "Score: " + this.scoreCount + "/" + i.ToString();
-					}
-
-
-					while(reply[0] != "118")
-					{
-						//recive answer
-						bufferIn = new byte[4096];
-						bytesRead = sock.Read(bufferIn, 0, 4096);
-						input = new ASCIIEncoding().GetString(bufferIn);
-
-						input = input.Substring(0, input.IndexOf('\0'));
-
-						reply = Program.StrSplit(input, '#');
-
-						log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived again: " + input + "\n\n"); });
-					}
+					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived again: " + input + "\n\n"); });
 				}
-				catch (Exception e)
-				{
-					MessageBox.Show(e.ToString());
-				}
-
-				this.clickedButton = null;
 			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.ToString());
+			}
+
+			this.clickedButton = null;
 		}
 
 		private void Button_Click(object sender, EventArgs e)
 		{
 			int count = this.scoreCount;
 
-			this.clickedButton = ((Button)sender).Name.Substring(5);
+			this.clickedButton = ((Button)sender).Name.Substring(6);
 			timer1.Stop();
 
 			this.current = ((Button)sender);
+			HandleQuestions();
+			setGroundForQuestion();
 
 			//while(this.clickedButton != null)
 			//{
@@ -160,6 +162,11 @@ namespace client
 			this.answer2.BackColor = System.Drawing.Color.Red;
 			this.answer3.BackColor = System.Drawing.Color.Red;
 			this.answer4.BackColor = System.Drawing.Color.Red;
+		}
+
+		private void Game_Load(object sender, EventArgs e)
+		{
+			//HandleQuestions(true);
 		}
 	}
 }
