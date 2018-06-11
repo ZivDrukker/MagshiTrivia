@@ -84,7 +84,7 @@
 			this.startOrLeave.Name = "startOrLeave";
 			this.startOrLeave.Size = new System.Drawing.Size(250, 75);
 			this.startOrLeave.TabIndex = 6;
-			this.startOrLeave.Text = "Start Room";
+			this.startOrLeave.Text = "Start Game";
 			this.startOrLeave.UseVisualStyleBackColor = true;
 			this.startOrLeave.Click += new System.EventHandler(this.startOrLeave_Click);
 			// 

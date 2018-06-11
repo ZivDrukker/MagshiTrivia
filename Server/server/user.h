@@ -26,6 +26,7 @@ public:
 	void leaveRoom();
 	int closeRoom();
 	bool leaveGame();
+	void setRoom(Room*);
 
 
 private:

@@ -20,7 +20,7 @@ void DataBase::checkErr()
 {
 	if (_rc)
 	{
-		cout << "Can't open databse 'trivia.db' errMsg = " << sqlite3_errmsg(_db) << endl;
+		cout << "Database ERR at 'trivia.db' errMsg: " << sqlite3_errmsg(_db) << endl;
 		sqlite3_close(_db);
 		system("pause");
 	}
@@ -71,8 +71,32 @@ vector<Question*> DataBase::initQuestions(int num)
 
 	for (int i = 0; i < num; i++)
 	{
+		int rngNum = (rand() % 4) + 1;
 		string* line = _tableSave[i];
-		qs->push_back(new Question(i, line[1], line[3], line[4], line[5], line[6], atoi(line[2].c_str())));
+
+		switch (rngNum)
+		{
+		case 1:
+			qs->push_back(new Question(i, line[1], line[2], line[5], line[3], line[4], rngNum));
+			break;
+		
+		case 2:
+			qs->push_back(new Question(i, line[1], line[3], line[2], line[4], line[5], rngNum));
+			break;
+
+		case 3:
+			qs->push_back(new Question(i, line[1], line[5], line[3], line[2], line[4], rngNum));
+			break;
+
+		case 4:
+			qs->push_back(new Question(i, line[1], line[4], line[3], line[5], line[2], rngNum));
+			break;
+
+		default:
+			cout << "Props to you if you got here... I'm impressed." << endl;
+			system("PAUSE");
+			break;
+		}
 	}
 
 	_tableSave.clear();
@@ -82,7 +106,7 @@ vector<Question*> DataBase::initQuestions(int num)
 
 bool DataBase::updateGameStatus(int gameId)
 {
-	_rc = sqlite3_exec(_db, string("update t_games set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(gameId) + "';").c_str(), callback, 0, &_zErrMsg);
+	_rc = sqlite3_exec(_db, string("update set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(gameId) + "';").c_str(), callback, 0, &_zErrMsg);
 
 	checkErr();
 	return !_rc;
@@ -156,7 +180,7 @@ vector<string> DataBase::getPersonalStatus(string username)
 
 int DataBase::insertNewGame()
 {
-	string toSend = "insert into t_games(status) values(0);";
+	string toSend = "insert into t_games(status, start_time) values(0, datetime('now', 'localtime'));";
 	_rc = sqlite3_exec(_db, toSend.c_str(), NULL, 0, &_zErrMsg);
 
 	checkErr();
@@ -184,13 +208,13 @@ int DataBase::callbackCount(void* notUsed, int argc, char** argv, char** azCol)
 	return atoi(argv[0]);
 }
 
-int DataBase::callback(void *, int argc, char** data, char **)
+int DataBase::callback(void*, int argc, char** data, char **)
 {
 	string* save = new string[argc];
 
 	for (int i = 0; i < argc; i++)
 	{
-		save[i] = string(data[i]);
+		save[i] = (data[i] == nullptr ? "" : string(data[i]));
 	}
 
 	_tableSave.push_back(save);

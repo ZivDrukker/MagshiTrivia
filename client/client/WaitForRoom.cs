@@ -69,17 +69,18 @@ namespace client
 				//usersCount = Int32.Parse(reply[1]);
 
 				//also insert all of the rooms into the GUI
-				for(int i = 1; i <= reply.Count(); i++)
-					{
+				for(int i = 1; i < reply.Count(); i++)
+				{
 					this.users.Items.Add(reply[i]);
 				}
 
-				return reply[1];
+				return (reply.Count() - 1).ToString();
 			}
 			catch (Exception e)
 			{
 				MessageBox.Show(e.ToString());
 			}
+
 			return "ERROR ACCOURD";
 		}
 
@@ -110,11 +111,11 @@ namespace client
 
 				if(reply[1] != "0")
 				{
-					for(int i = 2; i < reply.Count(); i +=2)
+					for(int i = 3; i < reply.Count(); i++)
 					{
-						if(reply[i + 1] == name)
+						if(reply[i] == name)
 						{
-							return Int32.Parse(reply[i]);
+							return Int32.Parse(reply[i - 1]);
 						}
 					}
 				}
@@ -178,11 +179,11 @@ namespace client
 			try
 			{
 				//send request
-				string msg = (this.startOrLeave.Text == "Start Room" ? "217" : "211");
+				string msg = (this.startOrLeave.Text == "Start Game" ? "217" : "211");
 
 				var log = Application.OpenForms.OfType<LogForm>().Single();
 				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
-
+				
 				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
 				sock.Write(buffer, 0, msg.Length);
 				sock.Flush();

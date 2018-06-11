@@ -44,6 +44,7 @@ void TriviaServer::Server()
 	bindAndListen();
 	thread handleRcv(&TriviaServer::handleReceivedMessages, this);
 	handleRcv.detach();
+
 	while (true)
 	{
 		cout << "Waiting for client connection request" << endl;
@@ -255,6 +256,7 @@ void TriviaServer::handleReceivedMessages()
 			{
 			case SIGN_IN:
 				usr = handleSignIn(message);
+
 				if (usr != nullptr)
 				{
 					_connectedUsers.insert(std::make_pair(message->getSock(), usr));
@@ -305,7 +307,7 @@ void TriviaServer::handleReceivedMessages()
 				handleLeaveGame(message);
 				break;
 
-			case GAME_SATRT:
+			case GAME_START:
 				handleStartGame(message);
 				break;
 
@@ -323,7 +325,7 @@ void TriviaServer::handleReceivedMessages()
 				break;
 
 			default:
-				cout << "hey ucf if you get here you are the best!!!\n https://www.youtube.com/watch?v=X9QfZU3xbDk" << endl;
+				cout << "Hey Ucf, if you get here you are the best!!!\n https://www.youtube.com/watch?v=X9QfZU3xbDk" << endl;
 				break;
 			}
 		}

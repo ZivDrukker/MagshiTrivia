@@ -4,6 +4,7 @@ Room::Room(int id, User* admin, string name, int maxUser, int qNo, int qTime, Da
 {
 	_id = id;
 	_admin = admin;
+	_admin->setRoom(this);
 	_name = name;
 	_maxUsers = maxUser;
 	_questionTime = qTime;
@@ -22,11 +23,13 @@ bool Room::joinRoom(User* user)
 			return false;
 		}
 	}
+
 	if (_users.size() == _maxUsers)
 	{
 		return false;
 	}
 
+	user->setRoom(this);
 	_users.push_back(user);
 
 	string toSend = getUsersListMessage();

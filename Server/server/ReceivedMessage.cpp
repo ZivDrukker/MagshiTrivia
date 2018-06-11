@@ -40,9 +40,11 @@ vector<string>& ReceivedMessage::getValues()
 	{
 		return _values;
 	}
-	if (_messageCode != 205)
+
+	if (_messageCode != 205 && _messageCode != 217)
 	{
 		_values = Helper::split(Helper::getStringPartFromSocket(_sock, BUFFER_SIZE), '#');
 	}
+
 	return _values;
 }

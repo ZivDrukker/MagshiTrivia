@@ -92,11 +92,15 @@ vector<string>& Helper::split(string str, char delim)
 	vector<string>* words = new vector<string>();
 	std::stringstream ss(str);
 	std::string token;
+
 	while (getline(ss, token, delim)) {
 		words->push_back(token);
 	}
 
-	(*words).erase(words->begin());
+	if (words->size() != 0)
+	{
+		(*words).erase(words->begin());
+	}
 
 	for (unsigned int i = 0; i < words->size(); i++)
 	{

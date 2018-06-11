@@ -37,7 +37,7 @@
 
 #define GAME_END 121
 #define GAME_LEAVE_MSG 222
-#define GAME_SATRT 217
+#define GAME_START 217
 
 #define QUESTION_SEND 118
 #define ANSWER_SEND 219

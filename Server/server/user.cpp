@@ -86,3 +86,8 @@ bool User::leaveGame()
 	}
 	return true;
 }
+
+void User::setRoom(Room* room)
+{
+	_currRoom = room;
+}
