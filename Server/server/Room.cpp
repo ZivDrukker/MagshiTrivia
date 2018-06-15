@@ -111,7 +111,7 @@ string Room::getName()
 
 void Room::startGame()
 {
-	_game = new Game(_users, _questionNo, _db, _admin);
+	_game = new Game(_users, _questionNo, _db, _admin, _id);
 }
 
 void Room::sendMessage(string msg)

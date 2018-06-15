@@ -11,7 +11,7 @@ using std::map;
 class Game
 {
 public:
-	Game(const vector<User*>&, int, DataBase*, User*);
+	Game(const vector<User*>&, int, DataBase*, User*, int);
 	~Game();
 	void sendFirstQuestion();
 	void handleFinishGame();

@@ -79,19 +79,19 @@ vector<Question*> DataBase::initQuestions(int num)
 		switch (rngNum)
 		{
 		case 1:
-			qs->push_back(new Question(i, line[1], line[2], line[5], line[3], line[4], rngNum));
+			qs->push_back(new Question(i, line[1], line[2], line[3], line[4], line[5], rngNum));
 			break;
 		
 		case 2:
-			qs->push_back(new Question(i, line[1], line[3], line[2], line[4], line[5], rngNum));
+			qs->push_back(new Question(i, line[1], line[5], line[2], line[3], line[4], rngNum));
 			break;
 
 		case 3:
-			qs->push_back(new Question(i, line[1], line[5], line[3], line[2], line[4], rngNum));
+			qs->push_back(new Question(i, line[1], line[5], line[4], line[2], line[3], rngNum));
 			break;
 
 		case 4:
-			qs->push_back(new Question(i, line[1], line[4], line[3], line[5], line[2], rngNum));
+			qs->push_back(new Question(i, line[1], line[3], line[4], line[5], line[2], rngNum));
 			break;
 
 		default:
@@ -108,7 +108,7 @@ vector<Question*> DataBase::initQuestions(int num)
 
 bool DataBase::updateGameStatus(int gameId)
 {
-	_rc = sqlite3_exec(_db, string("update set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(gameId) + "';").c_str(), NULL, 0, &_zErrMsg);
+	_rc = sqlite3_exec(_db, string("update t_games set status='1', end_time=datetime('now', 'localtime') where game_id='" + std::to_string(gameId) + "';").c_str(), NULL, 0, &_zErrMsg);
 
 	checkErr();
 	return !_rc;
@@ -238,4 +238,22 @@ int DataBase::callback(void*, int argc, char** data, char **)
 
 	_tableSave.push_back(save);
 	return 0;
+}
+
+int DataBase::getNewGameID()
+{
+	string toSend = "select max(game_id) from t_games;";
+	_rc = sqlite3_exec(_db, toSend.c_str(), callback, 0, &_zErrMsg);
+
+	checkErr();
+
+	if (_rc)
+	{
+		return -1;
+	}
+
+	int val = stoi(_tableSave[0][0]);
+	_tableSave.clear();
+
+	return val;
 }

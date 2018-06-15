@@ -122,6 +122,27 @@ namespace client
 					_reply = Program.StrSplit(input, '#');
 
 					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived again: " + input + "\n\n"); });
+
+					if(_reply[0] == "121")
+					{
+						string toPrint = "";
+						List<Tuple<int, string>> scores = new List<Tuple<int, string>>();
+
+						for (int i = 1; i < _reply.Count(); i += 2)
+						{
+							scores.Add(new Tuple<int, string>(Int32.Parse(_reply[i + 1]), _reply[i]));
+						}
+
+						scores.Sort();
+
+						for (int i = 0; i < scores.Count(); i++)
+						{
+							toPrint += scores[i].Item2 + ": " + scores[i].Item2.ToString() + "\n\n";
+						}
+
+						MessageBox.Show(toPrint);
+						this.Close();
+					}
 				}
 			}
 			catch (Exception e)
