@@ -183,5 +183,6 @@
 		private string clickedButton;
 		private System.Windows.Forms.Button current;
 		private System.Collections.Generic.List<string> _reply;
+		bool checkForFinish = true;
 	}
 }

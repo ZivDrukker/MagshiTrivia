@@ -110,7 +110,7 @@ namespace client
 					this.score.Text = "Score: " + this.scoreCount + "/" + currQNum.ToString();
 				}
 				
-				while(_reply[0] != "118")
+				while(_reply[0] != "118" && checkForFinish)
 				{
 					//recive answer
 					bufferIn = new byte[4096];
@@ -137,11 +137,11 @@ namespace client
 
 						for (int i = 0; i < scores.Count(); i++)
 						{
-							toPrint += scores[i].Item2 + ": " + scores[i].Item2.ToString() + "\n\n";
+							toPrint += scores[i].Item2 + ": " + scores[i].Item1.ToString() + "\n\n";
 						}
 
 						MessageBox.Show(toPrint);
-						this.Close();
+						checkForFinish = false;
 					}
 				}
 			}
@@ -151,6 +151,7 @@ namespace client
 			}
 
 			this.clickedButton = null;
+			this.Close();
 		}
 
 		private void Button_Click(object sender, EventArgs e)
