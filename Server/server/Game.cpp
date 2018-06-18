@@ -1,14 +1,12 @@
 #include "Game.h"
 
-Game::Game(const vector<User*>& users, int questionsNo, DataBase* db, User* admin, int gameID)
+Game::Game(const vector<User*>& users, int questionsNo, DataBase* db, User* admin)
 {
 	_db = db;
 	_players = users;
 	_questions_no = questionsNo;
 	_admin = admin;
 	_currentTurnAnswer = 0;
-	_id = gameID;
-
 	if (!_db->insertNewGame())
 	{
 		throw(std::invalid_argument("The game isnt starting"));
@@ -35,7 +33,7 @@ void Game::sendFirstQuestion()
 {
 	string toSend = "118##";
 	Question* q = _questions.front();
-	//_questions.erase(_questions.begin());
+	_questions.erase(_questions.begin());
 
 	string question = q->getQuestion();
 
@@ -82,6 +80,7 @@ void Game::handleFinishGame()
 	}
 
 	_players.clear();
+
 }
 
 bool Game::handleNextTurn()
@@ -116,14 +115,13 @@ bool Game::handleAnswerFromUser(User* usr, int index, int time)
 
 	if (index < 5)
 	{
-		_db->addAnswerToPlayer(_id, usr->getUsername(), _questions_no - _questions.size() + 1, ans[index - 1], correctIndex == index, time);
+		_db->addAnswerToPlayer(_id, usr->getUsername(), _questions_no, ans[index], correctIndex == index, time);
 	}
 	else
 	{
-		_db->addAnswerToPlayer(_id, usr->getUsername(), _questions_no - _questions.size() + 1, "", correctIndex == index, time);
+		_db->addAnswerToPlayer(_id, usr->getUsername(), _questions_no, "", correctIndex == index, time);
 	}
 
-	_questions.erase(_questions.begin());
 
 	if (correctIndex == index)
 	{

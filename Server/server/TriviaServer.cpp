@@ -10,7 +10,6 @@ TriviaServer::TriviaServer()
 	}
 	//_users.insert(std::make_pair("user", "123456"));
 	_db = new DataBase();
-	_roomIdSequence = _db->getNewGameID();
 }
 
 
@@ -200,7 +199,6 @@ void TriviaServer::handlePlayerAnswer(ReceivedMessage* msg)
 	if (msg->getUser()->getGame() != nullptr)
 	{
 		vector<string> values = msg->getValues();
-
 		if (!msg->getUser()->getGame()->handleAnswerFromUser(msg->getUser(), stoi(values[0]), stoi(values[1])))
 		{
 			delete msg->getUser()->getGame();

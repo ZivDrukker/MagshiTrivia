@@ -122,6 +122,7 @@ namespace client
 					_reply = Program.StrSplit(input, '#');
 
 					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived again: " + input + "\n\n"); });
+<<<<<<< HEAD
 
 					if(_reply[0] == "121")
 					{
@@ -143,6 +144,8 @@ namespace client
 						MessageBox.Show(toPrint);
 						checkForFinish = false;
 					}
+=======
+>>>>>>> parent of 7f9d684... Casual Debuuging 4.2.1
 				}
 			}
 			catch (Exception e)
