@@ -132,7 +132,7 @@ namespace client
 					WaitForRoom waiting = new WaitForRoom(sock, true, -1, roomName.Text, this.questionNum.Text, this.timePerQuestion.Text, this.playersNum.Text);//	-1 will be a default value for gameID
 					this.Hide();
 					waiting.ShowDialog();
-					this.Show();
+					this.Close();
 				}
 				else
 				{

@@ -210,7 +210,7 @@ namespace client
 						Game runningGame = new Game(sock, reply, qTime, qNum);
 						this.Hide();
 						runningGame.ShowDialog();
-						this.Show();
+						this.Close();
 					}
 				}
 				else

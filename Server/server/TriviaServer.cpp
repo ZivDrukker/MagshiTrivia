@@ -10,6 +10,7 @@ TriviaServer::TriviaServer()
 	}
 	//_users.insert(std::make_pair("user", "123456"));
 	_db = new DataBase();
+	_roomIdSequence = _db->getMaxID();
 }
 
 

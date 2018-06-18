@@ -1,7 +1,8 @@
 #include "Game.h"
 
-Game::Game(const vector<User*>& users, int questionsNo, DataBase* db, User* admin)
+Game::Game(const vector<User*>& users, int questionsNo, DataBase* db, User* admin, int id)
 {
+	_id = id;
 	_db = db;
 	_players = users;
 	_questions_no = questionsNo;
@@ -33,7 +34,6 @@ void Game::sendFirstQuestion()
 {
 	string toSend = "118##";
 	Question* q = _questions.front();
-	_questions.erase(_questions.begin());
 
 	string question = q->getQuestion();
 
@@ -107,31 +107,31 @@ bool Game::handleAnswerFromUser(User* usr, int index, int time)
 {
 	_currentTurnAnswer++;
 
-	_results[usr->getUsername()]++;
-
 	Question* q = _questions.front();
 	int correctIndex = q->getCorrectAnswerIndex();
 	string* ans = q->getAnswers();
 
 	if (index < 5)
 	{
-		_db->addAnswerToPlayer(_id, usr->getUsername(), _questions_no, ans[index], correctIndex == index, time);
+		_db->addAnswerToPlayer(_id, usr->getUsername(), _questions_no - _questions.size(), ans[index - 1], correctIndex == index, time);
 	}
 	else
 	{
-		_db->addAnswerToPlayer(_id, usr->getUsername(), _questions_no, "", correctIndex == index, time);
+		_db->addAnswerToPlayer(_id, usr->getUsername(), _questions_no - _questions.size(), "", correctIndex == index, time);
 	}
 
 
 	if (correctIndex == index)
 	{
-		::send(usr->getSocket(), "1", 1, 0);
+		::send(usr->getSocket(), "120#1", 5, 0);
+		_results[usr->getUsername()]++;
 	}
 	else
 	{
-		::send(usr->getSocket(), "0", 1, 0);
+		::send(usr->getSocket(), "120#0", 5, 0);
 	}
 
+	_questions.erase(_questions.begin());
 	return handleNextTurn();
 }
 

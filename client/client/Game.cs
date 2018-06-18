@@ -54,9 +54,9 @@ namespace client
 			timeLeft = qTime;
 			timer1.Start();
 			this.question.Text = _reply[1];
-			this.questionNum.Text = currQNum.ToString();
+			this.questionNum.Text = "Question: " + currQNum.ToString() + "/" + this.qNum.ToString();
 			currQNum++;
-			this.score.Text = scoreCount.ToString();
+			this.score.Text = "Score: " + scoreCount.ToString() + "/" + this.clicks.ToString();
 			this.answer1.Text = _reply[2];
 			this.answer2.Text = _reply[3];
 			this.answer3.Text = _reply[4];
@@ -105,12 +105,12 @@ namespace client
 							this.current.BackColor = System.Drawing.Color.Red;
 						}
 					}
-					this.current = null;
 
-					this.score.Text = "Score: " + this.scoreCount + "/" + currQNum.ToString();
+					this.current = null;
+					this.score.Text = "Score: " + this.scoreCount + "/" + (currQNum--).ToString();
 				}
-				
-				while(_reply[0] != "118" && checkForFinish)
+
+				while (_reply[0] != "118")
 				{
 					//recive answer
 					bufferIn = new byte[4096];
@@ -122,9 +122,13 @@ namespace client
 					_reply = Program.StrSplit(input, '#');
 
 					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived again: " + input + "\n\n"); });
-<<<<<<< HEAD
 
-					if(_reply[0] == "121")
+					this.answer1.BackColor = System.Drawing.Color.White;
+					this.answer2.BackColor = System.Drawing.Color.White;
+					this.answer3.BackColor = System.Drawing.Color.White;
+					this.answer4.BackColor = System.Drawing.Color.White;
+
+					if (_reply[0] == "121")
 					{
 						string toPrint = "";
 						List<Tuple<int, string>> scores = new List<Tuple<int, string>>();
@@ -142,10 +146,11 @@ namespace client
 						}
 
 						MessageBox.Show(toPrint);
-						checkForFinish = false;
+						this.Hide();
+						_reply[0] = "118";
+						this.Close();
 					}
-=======
->>>>>>> parent of 7f9d684... Casual Debuuging 4.2.1
+
 				}
 			}
 			catch (Exception e)
@@ -154,19 +159,22 @@ namespace client
 			}
 
 			this.clickedButton = null;
-			this.Close();
 		}
 
 		private void Button_Click(object sender, EventArgs e)
 		{
 			int count = this.scoreCount;
+			clicks++;
 
 			this.clickedButton = ((Button)sender).Name.Substring(6);
 			timer1.Stop();
 
 			this.current = ((Button)sender);
 			HandleQuestions();
-			setGroundForQuestion();
+			if (this.clicks < this.qNum)
+			{
+				setGroundForQuestion();
+			}
 
 			//while(this.clickedButton != null)
 			//{
@@ -178,7 +186,7 @@ namespace client
 
 		private void HandleCorrect()
 		{
-			
+
 		}
 
 		private void HandleWrong()

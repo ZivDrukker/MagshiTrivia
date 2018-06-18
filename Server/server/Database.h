@@ -22,6 +22,7 @@ public:
 	int insertNewGame();
 	bool updateGameStatus(int);
 	bool addAnswerToPlayer(int, string, int, string, bool, int);
+	int getMaxID();
 
 
 
