@@ -24,7 +24,7 @@ namespace client
 
 			try
 			{
-				TcpClient client = new TcpClient();
+				client = new TcpClient();
 				client.Connect(new IPEndPoint(IPAddress.Parse(ip), port));
 
 				this.sock = client.GetStream();
@@ -213,6 +213,16 @@ namespace client
 			{
 				MessageBox.Show(e.ToString());
 			}
+		}
+
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			base.OnFormClosing(e);
+
+			if (e.CloseReason == CloseReason.WindowsShutDown) return;
+
+			sock.Close();
+			client.Close();
 		}
 	}
 }

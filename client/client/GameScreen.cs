@@ -71,5 +71,23 @@ namespace client
 			topFrags.ShowDialog();
 			this.Show();
 		}
+
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			base.OnFormClosing(e);
+
+			if (e.CloseReason == CloseReason.WindowsShutDown) return;
+
+			string msg = "201";
+
+			var log = Application.OpenForms.OfType<LogForm>().Single();
+			log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+
+			byte[] buffer = new ASCIIEncoding().GetBytes(msg);
+			sock.Write(buffer, 0, msg.Length);
+			sock.Flush();
+
+			log.Invoke((MethodInvoker)delegate { log.SetLog("Recived nothing - no need to answer back on signout"); });
+		}
 	}
 }

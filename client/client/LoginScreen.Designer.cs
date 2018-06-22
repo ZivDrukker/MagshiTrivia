@@ -130,5 +130,7 @@
 		private System.Windows.Forms.TextBox email;
 
 		public System.Net.Sockets.NetworkStream sock;
+		public System.Net.Sockets.TcpClient client;
+
 	}
 }
