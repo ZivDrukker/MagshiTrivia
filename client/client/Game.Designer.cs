@@ -83,12 +83,13 @@
 			// 
 			// answer4
 			// 
+			this.answer4.BackColor = System.Drawing.SystemColors.ControlLight;
 			this.answer4.Location = new System.Drawing.Point(415, 400);
 			this.answer4.Name = "answer4";
 			this.answer4.Size = new System.Drawing.Size(375, 75);
 			this.answer4.TabIndex = 8;
 			this.answer4.Text = "answer4";
-			this.answer4.UseVisualStyleBackColor = true;
+			this.answer4.UseVisualStyleBackColor = false;
 			this.answer4.Click += new System.EventHandler(this.Button_Click);
 			// 
 			// question

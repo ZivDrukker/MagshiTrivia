@@ -26,5 +26,11 @@ namespace client
 		{
 			return this.log.Text;
 		}
+
+		public void closeLog()
+		{
+			this.Hide();
+			this.Close();
+		}
 	}
 }

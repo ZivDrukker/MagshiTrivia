@@ -109,6 +109,12 @@ void TriviaServer::clientHandler(SOCKET sock)
 	addReceivedMessages(buildReceivedMessage(sock, EXIT));
 }
 
+void TriviaServer::safeDeleteUserMessage(ReceivedMessage* msg)
+{
+	//no need for signout because of our build - can send '299' only when logged out
+	::closesocket(msg->getSock());
+}
+
 User* TriviaServer::handleSignIn(ReceivedMessage* msg)
 {
 	bool check = true;
@@ -175,12 +181,17 @@ bool TriviaServer::handleSignUp(ReceivedMessage* msg)
 
 void TriviaServer::handleSignOut(ReceivedMessage* msg)
 {
+	msg->getUser()->closeRoom();
+	msg->getUser()->leaveRoom();
+	msg->getUser()->leaveGame();
+
 	for (auto it = _connectedUsers.begin(); it != _connectedUsers.end(); it++)
 	{
 		if (it->second->getUsername() == msg->getUser()->getUsername())
 		{
-			::closesocket(it->first);
 			delete it->second;
+			_connectedUsers.erase(it);
+			break;//sometimes there is only one solution
 		}
 	}
 }
@@ -223,7 +234,7 @@ void TriviaServer::handleGetBestScores(ReceivedMessage* msg)
 
 void TriviaServer::handleGetPersonalStatus(ReceivedMessage* msg)
 {
-	string toSend = "";
+	string toSend = "126";
 	vector<string> answer = _db->getPersonalStatus(msg->getUser()->getUsername());
 
 	for (unsigned int i = 0; i < answer.size(); i++)
@@ -317,12 +328,15 @@ void TriviaServer::handleReceivedMessages()
 				break;
 
 			case HIGH_SCORES_REQ:
+				handleGetBestScores(message);
 				break;
 
 			case PERSONAL_STATUS_REQ:
+				handleGetPersonalStatus(message);
 				break;
 
 			case EXIT:
+				safeDeleteUserMessage(message);
 				break;
 
 			default:

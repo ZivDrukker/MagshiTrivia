@@ -67,11 +67,16 @@ void User::leaveRoom()
 
 int User::closeRoom()
 {
-	int id = _currRoom->closeRoom(this);
+	int id = 0;
 
-	if (id != -1)
+	if (_currRoom != nullptr)
 	{
-		_currRoom = nullptr;
+		id = _currRoom->closeRoom(this);
+
+		if (id != -1)
+		{
+			_currRoom = nullptr;
+		}
 	}
 
 	return id;
@@ -79,10 +84,13 @@ int User::closeRoom()
 
 bool User::leaveGame()
 {
-	if (_currGame->leaveGame(this))
+	if (_currGame != nullptr)
 	{
-		_currGame = nullptr;
-		return false;
+		if (_currGame->leaveGame(this))
+		{
+			_currGame = nullptr;
+			return false;
+		}
 	}
 	return true;
 }

@@ -54,7 +54,7 @@ namespace client
 			timeLeft = qTime;
 			timer1.Start();
 			this.question.Text = _reply[1];
-			this.questionNum.Text = "Question: " + currQNum.ToString() + "/" + this.qNum.ToString();
+			this.questionNum.Text = "Question: " + (clicks + 1 ).ToString() + "/" + this.qNum.ToString();
 			currQNum++;
 			this.score.Text = "Score: " + scoreCount.ToString() + "/" + this.clicks.ToString();
 			this.answer1.Text = _reply[2];
@@ -107,7 +107,7 @@ namespace client
 					}
 
 					this.current = null;
-					this.score.Text = "Score: " + this.scoreCount + "/" + (currQNum--).ToString();
+					this.score.Text = "Score: " + this.scoreCount + "/" + clicks.ToString();
 				}
 
 				while (_reply[0] != "118")
@@ -123,10 +123,10 @@ namespace client
 
 					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived again: " + input + "\n\n"); });
 
-					this.answer1.BackColor = System.Drawing.Color.White;
-					this.answer2.BackColor = System.Drawing.Color.White;
-					this.answer3.BackColor = System.Drawing.Color.White;
-					this.answer4.BackColor = System.Drawing.Color.White;
+					this.answer1.BackColor = System.Drawing.SystemColors.ControlLight;
+					this.answer2.BackColor = System.Drawing.SystemColors.ControlLight;
+					this.answer3.BackColor = System.Drawing.SystemColors.ControlLight;
+					this.answer4.BackColor = System.Drawing.SystemColors.ControlLight;
 
 					if (_reply[0] == "121")
 					{

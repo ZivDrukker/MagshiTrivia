@@ -132,6 +132,19 @@ namespace client
 					startGame.Activate();
 					startGame.ShowDialog();
 					this.Show();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
+
+					//erasing old credantials
+					this.email.ForeColor = System.Drawing.SystemColors.InactiveCaption;
+					this.email.Text = "Insert email here - FOR SIGN UP ONLY";
+
+					this.username.ForeColor = System.Drawing.SystemColors.InactiveCaption;
+					this.username.Text = "Insert username here";
+
+					this.password.ForeColor = System.Drawing.SystemColors.InactiveCaption;
+					this.password.PasswordChar = (char)0;
+					this.password.Text = "Insert password here";
+
+
 				}
 				else if (input == "1021")
 				{

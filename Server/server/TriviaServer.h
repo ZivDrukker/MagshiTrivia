@@ -72,7 +72,7 @@ private:
 	void accept();
 	void clientHandler(SOCKET);
 
-	//void safeDeleteUserMessage(ReceivedMessage*);
+	void safeDeleteUserMessage(ReceivedMessage*);
 
 	User* handleSignIn(ReceivedMessage*);
 	bool handleSignUp(ReceivedMessage*);

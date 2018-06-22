@@ -62,9 +62,9 @@ namespace client
 
 					if (reply.Count() != 1)
 					{
-						for (int i = 1; i < reply.Count(); i += 2)
+						for (int i = 1; i < reply.Count(); i++)
 						{
-							this.scores.Text += (reply[i] + " - " + reply[++i]);
+							this.scores.Text += reply[i];
 							if (i != reply.Count() - 1)
 							{
 								this.scores.Text += "\n\n\n\n";

@@ -129,6 +129,6 @@
 		private System.Windows.Forms.TextBox password;
 		private System.Windows.Forms.TextBox email;
 
-		private System.Net.Sockets.NetworkStream sock;
+		public System.Net.Sockets.NetworkStream sock;
 	}
 }

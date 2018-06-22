@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace client
 {
-	
+
 	static class Program
 	{
 		/// <summary>
@@ -19,10 +19,17 @@ namespace client
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			
+
 			Thread log = new Thread(() => Application.Run(new LogForm()));
 			log.Start();
 			Application.Run(new LoginScreen());
+
+
+			var log2 = Application.OpenForms.OfType<LogForm>().Single();
+			log2.Invoke((MethodInvoker)delegate
+			{
+				log2.closeLog();
+			});
 		}
 
 		public static List<string> StrSplit(string str, char ch)

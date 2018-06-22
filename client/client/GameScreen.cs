@@ -49,7 +49,19 @@ namespace client
 
 		private void quit_Click(object sender, EventArgs e)
 		{
-			Application.Exit();//close program!
+			string msg = "201";
+
+			var log = Application.OpenForms.OfType<LogForm>().Single();
+			log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+
+			byte[] buffer = new ASCIIEncoding().GetBytes(msg);
+			sock.Write(buffer, 0, msg.Length);
+			sock.Flush();
+			
+			log.Invoke((MethodInvoker)delegate { log.SetLog("Recived nothing - no need to answer back on signout"); });
+
+			this.Hide();
+			this.Close();
 		}
 
 		private void bestScores_Click(object sender, EventArgs e)
