@@ -256,6 +256,11 @@ namespace client
 							{
 								MessageBox.Show("Could not start room!");
 							}
+							else if (reply[0] == "116")
+							{
+								this.Hide();
+								this.Close();
+							}
 							else
 							{
 								Game runningGame = new Game(sock, reply, qTime, qNum);
@@ -267,6 +272,11 @@ namespace client
 						else
 						{
 							if (reply[0] == "1120")
+							{
+								this.Hide();
+								this.Close();
+							}
+							else if (reply[0] == "116")
 							{
 								this.Hide();
 								this.Close();

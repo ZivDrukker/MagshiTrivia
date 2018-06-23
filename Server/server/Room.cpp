@@ -45,11 +45,12 @@ void Room::leaveRoom(User* user)
 	{
 		if (_users[i] == user)
 		{
+			::send(user->getSocket(), "1120", 4, 0);
+
 			_users.erase(_users.begin() + i);
-			sendMessage(user, "1120");
 		}
 	}
-	sendMessage(user, "The user: " + user->getUsername() + " has left the room!");
+	sendMessage(getUsersListMessage());
 }
 
 int Room::closeRoom(User* admin)

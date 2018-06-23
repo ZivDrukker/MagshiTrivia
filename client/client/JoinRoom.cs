@@ -137,6 +137,8 @@ namespace client
 						this.Hide();
 						waiting.ShowDialog();
 						this.Show();
+						this.roomsDic.Clear();
+						HandleRoomsList();
 					}
 					else if (reply[0] == "1101")
 					{

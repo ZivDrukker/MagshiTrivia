@@ -8,7 +8,6 @@ TriviaServer::TriviaServer()
 	{
 		throw std::exception(__FUNCTION__ " - socket");
 	}
-	//_users.insert(std::make_pair("user", "123456"));
 	_db = new DataBase();
 	_roomIdSequence = _db->getMaxID();
 }
@@ -181,17 +180,19 @@ bool TriviaServer::handleSignUp(ReceivedMessage* msg)
 
 void TriviaServer::handleSignOut(ReceivedMessage* msg)
 {
-	msg->getUser()->closeRoom();
-	msg->getUser()->leaveRoom();
-	msg->getUser()->leaveGame();
-
-	for (auto it = _connectedUsers.begin(); it != _connectedUsers.end(); it++)
+	if (msg->getUser() != nullptr)
 	{
-		if (it->second->getUsername() == msg->getUser()->getUsername())
+		msg->getUser()->closeRoom();
+		msg->getUser()->leaveRoom();
+		msg->getUser()->leaveGame();
+		for (auto it = _connectedUsers.begin(); it != _connectedUsers.end(); it++)
 		{
-			delete it->second;
-			_connectedUsers.erase(it);
-			break;//sometimes there is only one solution
+			if (it->second->getUsername() == msg->getUser()->getUsername())
+			{
+				delete it->second;
+				_connectedUsers.erase(it);
+				break;//sometimes there is only one solution
+			}
 		}
 	}
 }
@@ -432,6 +433,15 @@ bool TriviaServer::handleCloseRoom(ReceivedMessage* msg)
 	}
 	
 	Room* r = getRoomById(id);
+	for (auto it = _roomsList.begin(); it != _roomsList.end(); ++it)
+	{
+		if (it->second == r)
+		{
+			_roomsList.erase(it);
+			break; // need to exit the loop
+		}
+
+	}
 	delete r;
 	return true;
 }

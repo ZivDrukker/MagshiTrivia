@@ -88,15 +88,17 @@ bool Game::handleNextTurn()
 
 	if (_currentTurnAnswer < _players.size())
 	{
-		return false;
+		return true;
 	}
 
 	if (_questions.size() == 0)
 	{
 		handleFinishGame();
+		return false;
 	}
 	else
 	{
+		_questions.erase(_questions.begin());
 		sendQuestionsToAllUsers();
 	}
 	return true;
@@ -131,7 +133,6 @@ bool Game::handleAnswerFromUser(User* usr, int index, int time)
 		::send(usr->getSocket(), "120#0", 5, 0);
 	}
 
-	_questions.erase(_questions.begin());
 	return handleNextTurn();
 }
 
@@ -156,20 +157,26 @@ bool Game::leaveGame(User* user)
 
 void Game::sendQuestionsToAllUsers()
 {
-	_currentTurnAnswer = 0;
-	Question* q = _questions.front();
-	//_questions.erase(_questions.begin());
-	string* ans = q->getAnswers();
-	string msg = "118###" + q->getQuestion();
-	for (unsigned int i = 0; i < 4; i++)
+	if (_questions.size() != 0)
 	{
-		msg += "###";
-		msg += ans[i];
+		_currentTurnAnswer = 0;
+		Question* q = _questions.front();
+		string* ans = q->getAnswers();
+		string msg = "118###" + q->getQuestion();
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			msg += "###";
+			msg += ans[i];
+		}
+
+		for (unsigned int i = 0; i < _players.size(); i++)
+		{
+			::send(_players[i]->getSocket(), msg.c_str(), msg.size(), 0);
+
+		}
 	}
-
-	for (unsigned int i = 0; i < _players.size(); i++)
+	else
 	{
-		::send(_players[i]->getSocket(), msg.c_str(), msg.size(), 0);
-
+		handleFinishGame();
 	}
 }
