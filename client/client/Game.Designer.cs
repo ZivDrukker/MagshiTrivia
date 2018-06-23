@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Game));
 			this.Title = new System.Windows.Forms.Label();
 			this.answer1 = new System.Windows.Forms.Button();
 			this.answer2 = new System.Windows.Forms.Button();
@@ -153,6 +154,7 @@
 			this.Controls.Add(this.answer2);
 			this.Controls.Add(this.answer1);
 			this.Controls.Add(this.Title);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(400, 70);
 			this.Name = "Game";
 			this.Text = "Game";

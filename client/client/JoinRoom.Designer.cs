@@ -36,7 +36,6 @@
 			this.join = new System.Windows.Forms.Button();
 			this.refresh = new System.Windows.Forms.Button();
 			this.back = new System.Windows.Forms.Button();
-			this.roomsDic = new System.Collections.Generic.Dictionary<string, string>();
 			this.SuspendLayout();
 			// 
 			// Title

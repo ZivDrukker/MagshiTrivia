@@ -19,6 +19,7 @@ namespace client
 			InitializeComponent();
 
 			this.sock = socket;
+			this.roomsDic = new System.Collections.Generic.Dictionary<string, string>();
 		}
 
 		private void back_Click(object sender, EventArgs e)
@@ -62,6 +63,8 @@ namespace client
 
 				List<string> reply = Program.StrSplit(input, '#');
 
+				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+
 				if (reply[1] == "0")
 				{
 					this.alert.Text = "No Rooms Found";
@@ -69,14 +72,13 @@ namespace client
 				else
 				{
 					//	CHECK AND INSERT ROOMS TO LIST CONSIDER MAKING A GLOBAL DATA TYPE TO CONTAIN THE ROOMS
-					for (int i = 2; i <= Int32.Parse(reply[1]) * 2; i += 2)
+					for (int i = 2; i < reply.Count; i += 2)
 					{
 						this.rooms.Items.Add(reply[i + 1]);
 						this.roomsDic[reply[i + 1]] = reply[i];
 					}
 				}
 
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
 
 			}

@@ -127,9 +127,10 @@
 		private System.Windows.Forms.ListBox users;
 
 		private System.Net.Sockets.NetworkStream sock;
+		private System.Threading.Thread usersUpdater;
 
-		private int usersCount;
 		private int qTime;
 		private int qNum;
+		private System.Collections.Generic.List<string> reply;
 	}
 }
