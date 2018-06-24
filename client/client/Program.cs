@@ -11,6 +11,7 @@ namespace client
 
 	static class Program
 	{
+		public static bool notClosed = true;
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>

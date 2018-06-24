@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
@@ -78,9 +79,6 @@ namespace client
 						this.roomsDic[reply[i + 1]] = reply[i];
 					}
 				}
-
-
-
 			}
 			catch (Exception e)
 			{
@@ -136,9 +134,7 @@ namespace client
 						WaitForRoom waiting = new WaitForRoom(sock, false, Int32.Parse(roomsDic[rooms.Text]), rooms.Text, reply[1], reply[2], "");
 						this.Hide();
 						waiting.ShowDialog();
-						this.Show();
-						this.roomsDic.Clear();
-						HandleRoomsList();
+						this.Close();
 					}
 					else if (reply[0] == "1101")
 					{
@@ -156,7 +152,7 @@ namespace client
 						WaitForRoom waiting = new WaitForRoom(sock, false, Int32.Parse(roomsDic[rooms.Text]), rooms.Text, reply[1], reply[2], "");
 						this.Hide();
 						waiting.ShowDialog();
-						this.Show();
+						this.Close();
 					}
 					else if (reply[0] == "1101")
 					{
@@ -168,10 +164,7 @@ namespace client
 					}
 				}
 				
-
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
-
-
 			}
 			catch (Exception e)
 			{
@@ -234,8 +227,6 @@ namespace client
 				}
 
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
-
-
 			}
 			catch (Exception e)
 			{

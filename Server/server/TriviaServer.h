@@ -10,6 +10,7 @@
 #include "Validator.h"
 #include "Room.h"
 #include "Database.h"
+#include <exception>
 
 #define PORT 1337
 
@@ -59,6 +60,7 @@ using std::cin;
 using std::endl;
 using std::thread;
 using std::pair;
+using std::exception;
 
 class TriviaServer
 {

@@ -182,9 +182,20 @@ void TriviaServer::handleSignOut(ReceivedMessage* msg)
 {
 	if (msg->getUser() != nullptr)
 	{
-		msg->getUser()->closeRoom();
-		msg->getUser()->leaveRoom();
-		msg->getUser()->leaveGame();
+		try
+		{
+			if (msg->getUser()->getRoom() != nullptr)
+			{
+				msg->getUser()->closeRoom();
+				msg->getUser()->leaveRoom();
+				msg->getUser()->leaveGame();
+			}
+		}
+		catch (exception e)
+		{
+			cout << e.what() <<endl;
+		}
+
 		for (auto it = _connectedUsers.begin(); it != _connectedUsers.end(); it++)
 		{
 			if (it->second->getUsername() == msg->getUser()->getUsername())

@@ -37,8 +37,24 @@ namespace client
 
 			this.roomName.Text += roomName;
 
+			Program.notClosed = true;
+			Thread useless = new Thread(noUse);
+			useless.Start();
+		}
+
+		private void noUse()
+		{
 			usersUpdater = new Thread(usersList);
 			usersUpdater.Start();
+			usersUpdater.Join();
+			try
+			{
+				this.Invoke((MethodInvoker)delegate { this.Hide(); this.Close(); });
+			}
+			catch (Exception e)
+			{
+				//If you are careful enough reading the code to get here I really really appreciate you! <3
+			}
 		}
 
 		private string HandleRoomDetails(int id)
@@ -133,9 +149,6 @@ namespace client
 		private void close_Click(object sender, EventArgs e)
 		{
 			HandleRoomClose();
-
-			this.Hide();
-			this.Close();
 		}
 
 		private void HandleRoomClose()
@@ -152,14 +165,7 @@ namespace client
 				sock.Write(buffer, 0, msg.Length);
 				sock.Flush();
 
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
-
-				List<string> reply = Program.StrSplit(input, '#');
+				string input = "recived somewhere else...";
 
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 			}
@@ -178,8 +184,6 @@ namespace client
 		{
 			try
 			{
-				//usersUpdater.Abort();//killing the thread so we get the messages here
-
 				//send request
 				string msg = (this.startOrLeave.Text == "Start Game" ? "217" : "211");
 
@@ -191,15 +195,6 @@ namespace client
 				sock.Flush();
 
 				string input = "recived somewhere else";
-				////recive answer
-				//byte[] bufferIn = new byte[4096];
-				//int bytesRead = sock.Read(bufferIn, 0, 4096);
-				//string input = new ASCIIEncoding().GetString(bufferIn);
-
-				//input = input.Substring(0, input.IndexOf('\0'));
-
-				//List<string> reply = Program.StrSplit(input, '#');
-
 				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 			}
 			catch (Exception e)
@@ -215,86 +210,95 @@ namespace client
 			this.startOrLeave.Text = "Leave Room";
 		}
 
-		private void WaitForRoom_Load(object sender, EventArgs e)
-		{
-
-		}
-
 		private void usersList()
 		{
-			while(true)
+			try
 			{
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
-
-				this.reply = Program.StrSplit(input, '#');
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
-
-				this.Invoke((MethodInvoker)delegate
+				while (Program.notClosed)
 				{
-					if (reply[0] == "108")
-					{
-						this.users.Items.Clear();
+					var log = Application.OpenForms.OfType<LogForm>().Single();
 
-						for (int i = 1; i < reply.Count(); i++)
-						{
-							this.users.Items.Add(reply[i]);
-						}
-					}
-					else
+					//recive answer
+					byte[] bufferIn = new byte[4096];
+					int bytesRead = sock.Read(bufferIn, 0, 4096);
+					string input = new ASCIIEncoding().GetString(bufferIn);
+
+					input = input.Substring(0, input.IndexOf('\0'));
+
+					this.reply = Program.StrSplit(input, '#');
+
+					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+
+					this.Invoke((MethodInvoker)delegate
 					{
-						if (this.startOrLeave.Text == "Start Game")
+						if (reply[0] == "108")
 						{
-							if (reply[0] != "118")
+							this.users.Items.Clear();
+
+							for (int i = 1; i < reply.Count(); i++)
 							{
-								MessageBox.Show("Could not start room!");
-							}
-							else if (reply[0] == "116")
-							{
-								this.Hide();
-								this.Close();
-							}
-							else
-							{
-								Game runningGame = new Game(sock, reply, qTime, qNum);
-								this.Hide();
-								runningGame.ShowDialog();
-								this.Close();
+								this.users.Items.Add(reply[i]);
 							}
 						}
 						else
 						{
-							if (reply[0] == "1120")
+							if (this.startOrLeave.Text == "Start Game")
 							{
-								this.Hide();
-								this.Close();
-							}
-							else if (reply[0] == "116")
-							{
-								this.Hide();
-								this.Close();
-							}
-							else if (reply[0] == "118")
-							{
-								Game runningGame = new Game(sock, reply, qTime, qNum);
-								this.Hide();
-								runningGame.ShowDialog();
-								this.Close();
+								if (reply[0] != "118" && reply[0] != "116")
+								{
+									MessageBox.Show("Could not start room!");
+								}
+								else if (reply[0] == "116")
+								{
+									this.Hide();
+									//this.Close(); GOING TO CLOSE FORM OUTSIDE OF THE THREAD
+									Program.notClosed = false;
+								}
+								else
+								{
+									Game runningGame = new Game(sock, reply, qTime, qNum);
+									this.Hide();
+									runningGame.ShowDialog();
+									this.Show();
+									//this.Close(); GOING TO CLOSE FORM OUTSIDE OF THE THREAD
+									Program.notClosed = false;
+								}
 							}
 							else
 							{
-								MessageBox.Show("ERROR!!!\n\nRoom already started or closed");
+								if (reply[0] == "1120")
+								{
+									this.Hide();
+									//this.Close(); GOING TO CLOSE FORM OUTSIDE OF THE THREAD
+									Program.notClosed = false;
+								}
+								else if (reply[0] == "116")
+								{
+									this.Hide();
+									//this.Close(); GOING TO CLOSE FORM OUTSIDE OF THE THREAD
+									Program.notClosed = false;
+								}
+								else if (reply[0] == "118")
+								{
+									Game runningGame = new Game(sock, reply, qTime, qNum);
+									this.Hide();
+									runningGame.ShowDialog();
+									this.Show();
+									//this.Close(); GOING TO CLOSE FORM OUTSIDE OF THE THREAD
+									Program.notClosed = false;
+								}
+								else
+								{
+									MessageBox.Show("ERROR!!!\n\nRoom already started or closed");
+								}
 							}
 						}
-					}
-				});
+					});
+				}
+			}
+			catch(ThreadAbortException e)
+			{
+				MessageBox.Show(e.ToString());
 			}
 		}
 	}

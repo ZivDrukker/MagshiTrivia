@@ -101,6 +101,7 @@ bool Game::handleNextTurn()
 		_questions.erase(_questions.begin());
 		sendQuestionsToAllUsers();
 	}
+
 	return true;
 }
 

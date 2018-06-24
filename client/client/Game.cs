@@ -184,11 +184,6 @@ namespace client
 			//((Button)sender).BackColor = (this.scoreCount > count ? System.Drawing.Color.Green : System.Drawing.Color.Red);
 		}
 
-		private void HandleCorrect()
-		{
-
-		}
-
 		private void HandleWrong()
 		{
 			this.answer1.BackColor = System.Drawing.Color.Red;
@@ -200,6 +195,24 @@ namespace client
 		private void Game_Load(object sender, EventArgs e)
 		{
 			//HandleQuestions(true);
+		}
+
+		protected override void OnFormClosing(FormClosingEventArgs e)
+		{
+			base.OnFormClosing(e);
+
+			if (e.CloseReason == CloseReason.WindowsShutDown) return;
+
+			string msg = "222";
+
+			var log = Application.OpenForms.OfType<LogForm>().Single();
+			log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+
+			byte[] buffer = new ASCIIEncoding().GetBytes(msg);
+			sock.Write(buffer, 0, msg.Length);
+			sock.Flush();
+
+			log.Invoke((MethodInvoker)delegate { log.SetLog("Recived nothing - no need to answer back on signout"); });
 		}
 	}
 }

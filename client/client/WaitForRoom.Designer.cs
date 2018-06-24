@@ -111,7 +111,6 @@
 			this.MinimumSize = new System.Drawing.Size(400, 70);
 			this.Name = "WaitForRoom";
 			this.Text = "WaitForRoom";
-			this.Load += new System.EventHandler(this.WaitForRoom_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

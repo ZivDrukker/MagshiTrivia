@@ -55,16 +55,20 @@ void Room::leaveRoom(User* user)
 
 int Room::closeRoom(User* admin)
 {
-	if (_admin == admin)
+	try
 	{
-		sendMessage("116");
-		for (unsigned int i = 0; i < _users.size(); i++)
+		if (_admin == admin)
 		{
-			_users.erase(_users.begin() + i);
+			sendMessage("116");
+			for (unsigned int i = 0; i < _users.size(); i++)
+			{
+				_users.erase(_users.begin() + i);
+			}
+			return _id;
 		}
-		return _id;
+		return -1;
 	}
-	return -1;
+	catch (...) {}
 }
 
 vector<User*> Room::getUsers()
