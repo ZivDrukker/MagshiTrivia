@@ -1,5 +1,6 @@
 #include<iostream>
 #include<math.h>
+#include<string>
 #include<string.h>
 #include<stdlib.h>
 #include<time.h>
@@ -58,17 +59,12 @@ void Rsa()
 	{
 		cout << e[i] << "\t" << d[i] << "\n";
 	}
-
-	//cout << "\nENTER MESSAGE\n";
-	//fflush(stdin);
-	//cin >> msg;
-	
-	//encrypt();
-	//decrypt(en);
 }
 
 long int* encryptMsg(string txt)
 {
+	//strncpy(msg, txt.c_str(), 100); //need to fix this 
+
 	for (i = 0; txt[i] != '\0'; i++)
 	{
 		m[i] = txt[i];
@@ -82,6 +78,7 @@ long int* encryptMsg(string txt)
 string decryptMsg(long int* ciph)
 {
 	string msg = "";
+	decrypt(ciph);
 
 	for (i = 0; m[i] != -1; i++)
 	{
@@ -191,4 +188,31 @@ void decrypt(long int* ciph)
 	{
 		printf("%c", m[i]);
 	}
+}
+
+
+string getEncryptedToString(long int* enc)
+{
+	string toSend = "";
+	toSend += to_string(enc[0]);
+
+	for (unsigned int i = 1; i < 100; i++)
+	{
+		toSend += "#";
+		toSend += to_string(enc[i]);
+	}
+	return toSend;
+}
+
+int main()
+{
+	Rsa();
+	string msg1 = "";
+	std::cin >> msg1;
+	cout << getEncryptedToString(encryptMsg(msg1)) << endl;
+	//cout << decryptMsg(en) << endl;
+	decrypt(en);
+
+	system("pause");
+	return 0;
 }
