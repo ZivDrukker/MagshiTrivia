@@ -38,20 +38,21 @@ namespace client
 			this.roomName.Text += roomName;
 
 			Program.notClosed = true;
-			Thread useless = new Thread(noUse);
+			Thread useless = new Thread(threadController);
 			useless.Start();
 		}
 
-		private void noUse()
+		private void threadController()
 		{
 			usersUpdater = new Thread(usersList);
 			usersUpdater.Start();
 			usersUpdater.Join();
+
 			try
 			{
 				this.Invoke((MethodInvoker)delegate { this.Hide(); this.Close(); });
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				//If you are careful enough reading the code to get here I really really appreciate you! <3
 			}
@@ -64,25 +65,12 @@ namespace client
 				//send request
 				string msg = "207" + "#" + id.ToString();
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
+				string input = Program.RecvMsg(sock);
 
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
 
 				List<string> reply = Program.StrSplit(input, '#');
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
-
-				//usersCount = Int32.Parse(reply[1]);
 
 				//also insert all of the rooms into the GUI
 				for(int i = 1; i < reply.Count(); i++)
@@ -94,7 +82,7 @@ namespace client
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 
 			return "ERROR ACCOURD";
@@ -107,23 +95,11 @@ namespace client
 				//send request
 				string msg = "205";
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
+				string input = Program.RecvMsg(sock);
 
 				List<string> reply = Program.StrSplit(input, '#');
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
 				if(reply[1] != "0")
 				{
@@ -140,7 +116,7 @@ namespace client
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 
 			return -1;//ERROR
@@ -158,20 +134,11 @@ namespace client
 				//send request
 				string msg = "215";
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
-
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				string input = "recived somewhere else...";
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+				Program.SendMsg(sock, msg);
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 
@@ -187,19 +154,11 @@ namespace client
 				//send request
 				string msg = (this.startOrLeave.Text == "Start Game" ? "217" : "211");
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
-
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				string input = "recived somewhere else";
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+				Program.SendMsg(sock, msg);
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 
@@ -216,18 +175,9 @@ namespace client
 			{
 				while (Program.notClosed)
 				{
-					var log = Application.OpenForms.OfType<LogForm>().Single();
-
-					//recive answer
-					byte[] bufferIn = new byte[4096];
-					int bytesRead = sock.Read(bufferIn, 0, 4096);
-					string input = new ASCIIEncoding().GetString(bufferIn);
-
-					input = input.Substring(0, input.IndexOf('\0'));
+					string input = Program.RecvMsg(sock);
 
 					this.reply = Program.StrSplit(input, '#');
-
-					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
 					this.Invoke((MethodInvoker)delegate
 					{
@@ -298,7 +248,7 @@ namespace client
 			}
 			catch(ThreadAbortException e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 	}

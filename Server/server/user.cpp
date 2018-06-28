@@ -1,5 +1,6 @@
 #include "user.h"
 #include "Room.h"
+#include "crypto.h"
 
 User::User(string username, SOCKET sock)
 {
@@ -9,7 +10,7 @@ User::User(string username, SOCKET sock)
 
 void User::send(string msg)
 {
-	::send(_sock, msg.c_str(), msg.size(), 0);
+	::send(_sock, encrypto(msg.c_str()), msg.size(), 0);
 }
 
 string User::getUsername()

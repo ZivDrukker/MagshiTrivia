@@ -124,16 +124,16 @@ User* TriviaServer::handleSignIn(ReceivedMessage* msg)
 		{
 			if (it->second->getUsername() == unameAndPass[0])
 			{
-				::send(msg->getSock(), "1022", 4, 0);
+				::send(msg->getSock(), encrypto("1022"), 4, 0);
 				return nullptr;
 			}
 		}
-		::send(msg->getSock(), "1020", 4, 0);
+		::send(msg->getSock(), encrypto("1020"), 4, 0);
 		return new User(string(unameAndPass[0]), msg->getSock());
 	}
 	else
 	{
-		::send(msg->getSock(), "1021", 4, 0);
+		::send(msg->getSock(), encrypto("1021"), 4, 0);
 	}
 
 	return nullptr;
@@ -153,27 +153,27 @@ bool TriviaServer::handleSignUp(ReceivedMessage* msg)
 				{
 					//_connectedUsers.insert(std::make_pair(sock, new User(values[0], sock)));
 					_db->addNewUser(values[0], values[1], values[2]);
-					::send(sock, "1040", 4, 0);
+					::send(sock, encrypto("1040"), 4, 0);
 					return true;
 				}
 				else
 				{
-					::send(sock, "1044", 4, 0);
+					::send(sock, encrypto("1044"), 4, 0);
 				}
 			}
 			else
 			{
-				::send(sock, "1042", 4, 0);
+				::send(sock, encrypto("1042"), 4, 0);
 			}
 		}
 		else
 		{
-			::send(sock, "1043", 4, 0);
+			::send(sock, encrypto("1043"), 4, 0);
 		}
 	}
 	else
 	{
-		::send(sock, "1041", 4, 0);
+		::send(sock, encrypto("1041"), 4, 0);
 	}
 	return false;
 }
@@ -241,7 +241,7 @@ void TriviaServer::handleGetBestScores(ReceivedMessage* msg)
 		toSend += "#" + answer[i];
 	}
 
-	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
+	::send(msg->getSock(), encrypto(toSend.c_str()), toSend.length(), 0);
 }
 
 void TriviaServer::handleGetPersonalStatus(ReceivedMessage* msg)
@@ -254,7 +254,7 @@ void TriviaServer::handleGetPersonalStatus(ReceivedMessage* msg)
 		toSend += "#" + answer[i];
 	}
 
-	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
+	::send(msg->getSock(), encrypto(toSend.c_str()), toSend.length(), 0);
 }
 
 void TriviaServer::handleReceivedMessages()
@@ -315,11 +315,11 @@ void TriviaServer::handleReceivedMessages()
 			case ROOM_CREATE_REQ:
 				if (handleCreateRoom(message))
 				{
-					::send(message->getSock(), "1140", 4, 0);
+					::send(message->getSock(), encrypto("1140"), 4, 0);
 				}
 				else
 				{
-					::send(message->getSock(), "1141", 4, 0);
+					::send(message->getSock(), encrypto("1141"), 4, 0);
 				}
 				break;
 
@@ -470,20 +470,20 @@ bool TriviaServer::handleJoinRoom(ReceivedMessage* msg)
 
 	if (r == nullptr)
 	{
-		::send(msg->getSock(), "1102", 101, 0);
+		::send(msg->getSock(), encrypto("1102"), 101, 0);
 		return false;
 	}
 	string toSend = "1100#" + std::to_string(r->getQuestionsNo()) + "#" + std::to_string(r->getQuestionTime());
 
 	if (!msg->getUser()->joinRoom(r))
 	{
-		::send(msg->getSock(),"1101", 101, 0);
+		::send(msg->getSock(), encrypto("1101"), 101, 0);
 		return false;
 
 	}
 	else
 	{
-		::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
+		::send(msg->getSock(), encrypto(toSend.c_str()), toSend.length(), 0);
 	}
 
 	return true;
@@ -502,7 +502,7 @@ void TriviaServer::handleGetUserInRoom(ReceivedMessage* msg)
 	Room* r = getRoomById(atoi(values[0].c_str()));
 	string toSend = r->getUsersListMessage();
 
-	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
+	::send(msg->getSock(), encrypto(toSend.c_str()), toSend.length(), 0);
 }
 
 void TriviaServer::handleGetRooms(ReceivedMessage* msg)
@@ -520,5 +520,5 @@ void TriviaServer::handleGetRooms(ReceivedMessage* msg)
 		toSend += it->second->getName();
 	}
 
-	::send(msg->getSock(), toSend.c_str(), toSend.length(), 0);
+	::send(msg->getSock(), encrypto(toSend.c_str()), toSend.length(), 0);
 }

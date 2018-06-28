@@ -10,6 +10,7 @@
 #include "Validator.h"
 #include "Room.h"
 #include "Database.h"
+#include "crypto.h"
 #include <exception>
 
 #define PORT 1337

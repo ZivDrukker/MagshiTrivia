@@ -70,23 +70,11 @@ namespace client
 				//send request
 				string msg = "219#" + this.clickedButton + "#" + (this.qTime - this.timeLeft).ToString();
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
+				string input = Program.RecvMsg(sock);
 
 				_reply = Program.StrSplit(input, '#');
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
 				if (_reply[0] == "120")
 				{
@@ -112,16 +100,9 @@ namespace client
 
 				while (_reply[0] != "118")
 				{
-					//recive answer
-					bufferIn = new byte[4096];
-					bytesRead = sock.Read(bufferIn, 0, 4096);
-					input = new ASCIIEncoding().GetString(bufferIn);
-
-					input = input.Substring(0, input.IndexOf('\0'));
+					input = Program.RecvMsg(sock);
 
 					_reply = Program.StrSplit(input, '#');
-
-					log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived again: " + input + "\n\n"); });
 
 					this.answer1.BackColor = System.Drawing.SystemColors.ControlLight;
 					this.answer2.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -155,7 +136,7 @@ namespace client
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 
 			this.clickedButton = null;
@@ -175,13 +156,6 @@ namespace client
 			{
 				setGroundForQuestion();
 			}
-
-			//while(this.clickedButton != null)
-			//{
-			//	continue;
-			//}
-
-			//((Button)sender).BackColor = (this.scoreCount > count ? System.Drawing.Color.Green : System.Drawing.Color.Red);
 		}
 
 		private void HandleWrong()
@@ -205,14 +179,7 @@ namespace client
 
 			string msg = "222";
 
-			var log = Application.OpenForms.OfType<LogForm>().Single();
-			log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
-
-			byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-			sock.Write(buffer, 0, msg.Length);
-			sock.Flush();
-
-			log.Invoke((MethodInvoker)delegate { log.SetLog("Recived nothing - no need to answer back on signout"); });
+			Program.SendMsg(sock, msg);
 		}
 	}
 }

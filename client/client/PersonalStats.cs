@@ -32,23 +32,11 @@ namespace client
 				//send request
 				string msg = "225";
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
+				string input = Program.RecvMsg(sock);
 
 				List<string> reply = Program.StrSplit(input, '#');
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
 				if(reply[0] == "126")
 				{
@@ -64,7 +52,7 @@ namespace client
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 

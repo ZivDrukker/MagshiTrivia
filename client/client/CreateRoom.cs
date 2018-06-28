@@ -113,19 +113,9 @@ namespace client
 				string msg = "";
 				msg = "213" + "##" + this.roomName.Text + "##" + this.playersNum.Text + "##" + this.questionNum.Text + "##" + this.timePerQuestion.Text;
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive signin answer
-				byte[] bufferIn = new byte[4];
-				int bytesRead = sock.Read(bufferIn, 0, 4);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+				string input = Program.RecvMsg(sock);
 
 				//checking answer
 				if (input == "1140")
@@ -142,7 +132,7 @@ namespace client
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 	}

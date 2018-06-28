@@ -48,23 +48,11 @@ namespace client
 				//send request
 				string msg = "205";
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
+				string input = Program.RecvMsg(sock);
 
 				List<string> reply = Program.StrSplit(input, '#');
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 
 				if (reply[1] == "0")
 				{
@@ -72,7 +60,6 @@ namespace client
 				}
 				else
 				{
-					//	CHECK AND INSERT ROOMS TO LIST CONSIDER MAKING A GLOBAL DATA TYPE TO CONTAIN THE ROOMS
 					for (int i = 2; i < reply.Count; i += 2)
 					{
 						this.rooms.Items.Add(reply[i + 1]);
@@ -82,7 +69,7 @@ namespace client
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 
@@ -102,30 +89,15 @@ namespace client
 					msg += "#-1";//expecting error code in return
 				}
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
+				string input = Program.RecvMsg(sock);
 
 				List<string> reply = Program.StrSplit(input, '#');
 
 				if(reply[0] == "108")
 				{
-					//recive answer again
-					bufferIn = new byte[4096];
-					bytesRead = sock.Read(bufferIn, 0, 4096);
-					input = new ASCIIEncoding().GetString(bufferIn);
-
-					input = input.Substring(0, input.IndexOf('\0'));
+					input = Program.RecvMsg(sock);
 
 					reply = Program.StrSplit(input, '#');
 
@@ -163,12 +135,10 @@ namespace client
 						this.alert.Text = "Room does not exist!";
 					}
 				}
-				
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 
@@ -188,19 +158,9 @@ namespace client
 					msg += "#-1";//expecting error code in return
 				}
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive answer
-				byte[] bufferIn = new byte[4096];
-				int bytesRead = sock.Read(bufferIn, 0, 4096);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				input = input.Substring(0, input.IndexOf('\0'));
+				string input = Program.RecvMsg(sock);
 
 				List<string> reply = Program.StrSplit(input, '#');
 
@@ -225,16 +185,13 @@ namespace client
 				{
 					this.alert.Text = "Hi! You broke our program! Not nice... Go away.";
 				}
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
-
-
+		
 		private void JoinRoom_Load(object sender, EventArgs e)
 		{
 			HandleRoomsList();

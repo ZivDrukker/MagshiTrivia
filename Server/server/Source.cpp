@@ -7,19 +7,19 @@
 
 using namespace std;
 
-//int main()
-//{
-//	try
-//	{
-//		WSAInitializer wsaInit;
-//		TriviaServer myServer;
-//
-//		myServer.Server();
-//	}
-//	catch (exception& e)
-//	{
-//		cout << "Error occured: " << e.what() << endl;
-//	}
-//	system("PAUSE");
-//	return 0;
-//}
+int main()
+{
+	try
+	{
+		WSAInitializer wsaInit;
+		TriviaServer myServer;
+
+		myServer.Server();
+	}
+	catch (exception& e)
+	{
+		cout << "Error occured: " << e.what() << endl;
+	}
+	system("PAUSE");
+	return 0;
+}

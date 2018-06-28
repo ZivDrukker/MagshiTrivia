@@ -43,7 +43,7 @@ bool DataBase::isUserExists(string username)
 
 bool DataBase::addNewUser(string uname, string password, string email)
 {
-	_rc = sqlite3_exec(_db, string("insert into t_users(username, password, email) values('" + uname + ", '" + password + "' + '" + email + "'');").c_str(), NULL, 0, &_zErrMsg);
+	_rc = sqlite3_exec(_db, string("insert into t_users(username, password, email) values('" + uname + "', '" + password + "', '" + email + "');").c_str(), NULL, 0, &_zErrMsg);
 
 	checkErr();
 	return false;

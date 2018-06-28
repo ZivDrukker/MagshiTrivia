@@ -110,19 +110,9 @@ namespace client
 				string msg = "";
 				msg = "200" + "##" + this.username.Text + "##" + this.password.Text;
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
+				Program.SendMsg(sock, msg);
 
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive signin answer
-				byte[] bufferIn = new byte[4];
-				int bytesRead = sock.Read(bufferIn, 0, 4);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
+				string input = Program.RecvMsg(sock);
 
 				//checking answer
 				if (input == "1020")
@@ -157,7 +147,7 @@ namespace client
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 		
@@ -167,51 +157,49 @@ namespace client
 			{
 				//send signin request
 				string msg = "";
-				msg = "203" + "##" + this.username.Text + "##" + this.password.Text + "##" + this.email.Text;
 
-				var log = Application.OpenForms.OfType<LogForm>().Single();
-				log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
-
-				byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-				sock.Write(buffer, 0, msg.Length);
-				sock.Flush();
-
-				//recive signin answer
-				byte[] bufferIn = new byte[4];
-				int bytesRead = sock.Read(bufferIn, 0, 4);
-				string input = new ASCIIEncoding().GetString(bufferIn);
-
-				log.Invoke((MethodInvoker)delegate { log.SetLog(log.GetLog() + "Recived: " + input + "\n\n"); });
-
-				//checking answer
-				if (input == "1040")
+				if (this.email.Text == "Insert email here - FOR SIGN UP ONLY")
 				{
-					GameScreen startGame = new GameScreen(sock);
-					this.Hide();
-					startGame.Activate();
-					startGame.ShowDialog();
-					this.Show();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
-				}
-				else if (input == "1041")
-				{
-					MessageBox.Show("Password is Illegal!\n\nPlease try again");
-				}
-				else if(input == "1042")
-				{
-					MessageBox.Show("Username already exists!\n\nPlease try again");
-				}
-				else if(input == "1043")
-				{
-					MessageBox.Show("Username is Illegal!\n\nPlease try again");
+					MessageBox.Show("Please insert email address!\n\nTry again");
 				}
 				else
 				{
-					MessageBox.Show("Email is Illegal!\n\nPlease try again");
+					msg = "203" + "##" + this.username.Text + "##" + this.password.Text + "##" + this.email.Text;
+
+					Program.SendMsg(sock, msg);
+
+					string input = Program.RecvMsg(sock);
+
+					//checking answer
+					if (input == "1040")
+					{
+						GameScreen startGame = new GameScreen(sock);
+						this.Hide();
+						startGame.Activate();
+						startGame.ShowDialog();
+						this.Show();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
+					}
+					else if (input == "1041")
+					{
+						MessageBox.Show("Password is Illegal!\n\nPlease try again");
+					}
+					else if (input == "1042")
+					{
+						MessageBox.Show("Username already exists!\n\nPlease try again");
+					}
+					else if (input == "1043")
+					{
+						MessageBox.Show("Username is Illegal!\n\nPlease try again");
+					}
+					else
+					{
+						MessageBox.Show("Email is Illegal!\n\nPlease try again");
+					}
 				}
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show(e.Message);
 			}
 		}
 
@@ -221,8 +209,11 @@ namespace client
 
 			if (e.CloseReason == CloseReason.WindowsShutDown) return;
 
-			sock.Close();
-			client.Close();
+			if (sock != null && client != null)
+			{
+				sock.Close();
+				client.Close();
+			}
 		}
 	}
 }

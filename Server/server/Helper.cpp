@@ -1,4 +1,6 @@
 #include "Helper.h"
+#include "crypto.h"
+#include "base64.h"
 
 
 // recieves the type code of the message from socket (first byte)
@@ -66,6 +68,7 @@ char* Helper::getPartFromSocket(SOCKET sc, int bytesNum, int flags)
 	}
 
 	data[bytesNum] = 0;
+
 	return data;
 }
 

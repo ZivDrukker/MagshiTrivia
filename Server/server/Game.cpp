@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "crypto.h"
 
 Game::Game(const vector<User*>& users, int questionsNo, DataBase* db, User* admin, int id)
 {
@@ -39,7 +40,7 @@ void Game::sendFirstQuestion()
 
 	if (question.length() == 0)
 	{
-		::send(_admin->getSocket(), "1180", 4, 0);
+		::send(_admin->getSocket(), encrypto("1180"), 4, 0);
 		return;
 	}
 
@@ -55,7 +56,7 @@ void Game::sendFirstQuestion()
 
 	for (auto it = _players.begin(); it != _players.end(); it++)
 	{
-		::send((*it)->getSocket(), toSend.c_str(), toSend.length(), 0);
+		::send((*it)->getSocket(), encrypto(toSend.c_str()), toSend.length(), 0);
 	}
 
 }
@@ -76,7 +77,7 @@ void Game::handleFinishGame()
 
 	for (unsigned int i = 0; i < _players.size(); i++)
 	{
-		::send(_players[i]->getSocket(), toSend.c_str(), toSend.length(), 0);
+		::send(_players[i]->getSocket(), encrypto(toSend.c_str()), toSend.length(), 0);
 	}
 
 	_players.clear();
@@ -126,12 +127,12 @@ bool Game::handleAnswerFromUser(User* usr, int index, int time)
 
 	if (correctIndex == index)
 	{
-		::send(usr->getSocket(), "120#1", 5, 0);
+		::send(usr->getSocket(), encrypto("120#1"), 5, 0);
 		_results[usr->getUsername()]++;
 	}
 	else
 	{
-		::send(usr->getSocket(), "120#0", 5, 0);
+		::send(usr->getSocket(), encrypto("120#0"), 5, 0);
 	}
 
 	return handleNextTurn();
@@ -172,7 +173,7 @@ void Game::sendQuestionsToAllUsers()
 
 		for (unsigned int i = 0; i < _players.size(); i++)
 		{
-			::send(_players[i]->getSocket(), msg.c_str(), msg.size(), 0);
+			::send(_players[i]->getSocket(), encrypto(msg.c_str()), msg.size(), 0);
 
 		}
 	}
