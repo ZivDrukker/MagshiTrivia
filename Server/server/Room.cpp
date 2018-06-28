@@ -69,7 +69,10 @@ int Room::closeRoom(User* admin)
 		}
 		return -1;
 	}
-	catch (...) {}
+	catch (...) 
+	{
+		return -1;
+	}
 }
 
 vector<User*> Room::getUsers()

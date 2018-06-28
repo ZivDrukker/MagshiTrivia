@@ -13,7 +13,9 @@ int Helper::getMessageTypeCode(SOCKET sc)
 	if (msg == "")
 		return 0;
 
-	int res = std::atoi(s);
+	//msg = decrypto(msg);
+
+	int res = std::stoi(s);
 	delete s;
 	return  res;
 }
@@ -67,6 +69,14 @@ char* Helper::getPartFromSocket(SOCKET sc, int bytesNum, int flags)
 		throw std::exception(s.c_str());
 	}
 
+	data[bytesNum] = 0;
+
+	string msg = decrypto(data);
+
+	for (unsigned int i = 0; i < msg.length(); i++)
+	{
+		data[i] = msg[i];
+	}
 	data[bytesNum] = 0;
 
 	return data;

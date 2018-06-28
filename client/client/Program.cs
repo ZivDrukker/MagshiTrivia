@@ -68,12 +68,12 @@ namespace client
 			}
 			a += (char)0;
 
-			return Convert.ToBase64String(new ASCIIEncoding().GetBytes(a));
+			return a;
 		}
 
-		public static string Decrypto(string msgBytes)
+		public static string Decrypto(string msg)
 		{
-			string t = "", msg = new ASCIIEncoding().GetString((Convert.FromBase64String(msgBytes)));
+            string t = "";
 
 			for (int i = 0; i < msg.Length; i++)
 			{
@@ -98,18 +98,8 @@ namespace client
 			msg = Encrypto(msg);
 			
 			byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-			try
-			{
-				if (sock.CanWrite)
-				{
-					sock.Write(buffer, 0, msg.Length);
-				}
-			}
-			catch(Exception e)
-			{
-				MessageBox.Show(e.ToString());
-			}
-			sock.Flush();
+            sock.Write(buffer, 0, msg.Length);
+			//sock.Flush();
 		}
 
 		public static string RecvMsg(NetworkStream sock)
@@ -125,7 +115,7 @@ namespace client
 
 			for (int i = 0; i < input.Length && !endFound; i++)
 			{
-				if (input[i] == '\0')
+				if (input[i] == '!')
 				{
 					endFound = true;
 					input = input.Substring(0, i);

@@ -23,11 +23,11 @@ namespace client
 
 			this.qNum = qNum;
 			this.qTime = qTime;
+            this.time.Text = qTime.ToString();
 			this.currQNum = 1;
 			this.scoreCount = 0;
 			this.current = null;
 
-			//this.Show();
 			setGroundForQuestion();
 		}
 
@@ -181,5 +181,6 @@ namespace client
 
 			Program.SendMsg(sock, msg);
 		}
-	}
+
+    }
 }

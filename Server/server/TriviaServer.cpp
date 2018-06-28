@@ -96,10 +96,12 @@ void TriviaServer::clientHandler(SOCKET sock)
 
 	try
 	{
-		while (code != 0 && code != EXIT)
+		while (code != EXIT)
 		{
-			addReceivedMessages(buildReceivedMessage(sock, code));
-
+			if (code != 0)
+			{
+				addReceivedMessages(buildReceivedMessage(sock, code));
+			}
 			code = Helper::getMessageTypeCode(sock);
 		}
 	}
