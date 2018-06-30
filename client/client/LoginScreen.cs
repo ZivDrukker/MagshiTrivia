@@ -28,6 +28,7 @@ namespace client
 				client.Connect(new IPEndPoint(IPAddress.Parse(ip), port));
 
 				this.sock = client.GetStream();
+                Program.sendAndRecieveKey(sock);
 			}
 			catch(Exception e)
 			{

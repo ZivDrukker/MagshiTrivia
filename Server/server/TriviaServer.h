@@ -109,7 +109,6 @@ private:
 	map<int, Room*> _roomsList;
 	mutex _mtxReceivedMessage;
 	queue<ReceivedMessage*> _queReceivedMessages;
-
 	int _roomIdSequence = 0;
 
 };

@@ -1,6 +1,5 @@
 #include "Helper.h"
 #include "crypto.h"
-#include "base64.h"
 
 
 // recieves the type code of the message from socket (first byte)
@@ -12,8 +11,6 @@ int Helper::getMessageTypeCode(SOCKET sc)
 
 	if (msg == "")
 		return 0;
-
-	//msg = decrypto(msg);
 
 	int res = std::stoi(s);
 	delete s;
@@ -71,7 +68,17 @@ char* Helper::getPartFromSocket(SOCKET sc, int bytesNum, int flags)
 
 	data[bytesNum] = 0;
 
-	string msg = decrypto(data);
+	string msg = decrypto(data, sc);
+
+	bool end = false;
+	for (int i = 0; i < msg.length() && !end; i++)
+	{
+		if (msg[i] == 'Í')
+		{
+			msg = msg.substr(0, i);
+			end = true;
+		}
+	}
 
 	for (unsigned int i = 0; i < msg.length(); i++)
 	{

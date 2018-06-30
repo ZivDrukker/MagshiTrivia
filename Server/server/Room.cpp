@@ -46,7 +46,7 @@ void Room::leaveRoom(User* user)
 	{
 		if (_users[i] == user)
 		{
-			::send(user->getSocket(), encrypto("1120"), 4, 0);
+			::send(user->getSocket(), encrypto("1120", user->getSocket()), 4, 0);
 
 			_users.erase(_users.begin() + i);
 		}
@@ -134,7 +134,7 @@ void Room::sendMessage(User* user, string msg)
 	{
 		if (_users[i] != user)
 		{
-			::send(_users[i]->getSocket(), encrypto(msg.c_str()), msg.size(), 0);
+			::send(_users[i]->getSocket(), encrypto(msg.c_str(), _users[i]->getSocket()), msg.size(), 0);
 		}
 	}
 }
