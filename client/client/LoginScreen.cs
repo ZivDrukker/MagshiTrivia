@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 namespace client
 {
@@ -18,9 +19,11 @@ namespace client
 		{
 			InitializeComponent();
 
-			//socket init
-			int port = 1337;
-			string ip = "127.0.0.1";
+			//socket init and reading from config file
+			string[] text = System.IO.File.ReadAllLines("config.cfg");
+
+			int port = Int32.Parse(Program.StrSplit(text[0], ':')[1]);
+			string ip = Program.StrSplit(text[1], ':')[1];
 
 			try
 			{
@@ -122,7 +125,7 @@ namespace client
 					this.Hide();
 					startGame.Activate();
 					startGame.ShowDialog();
-					this.Show();//							REVIEW OPTION TO JUST HIDE AND COME BACK TO SAME LOGIN CREDENTIALS
+					this.Show();
 
 					//erasing old credantials
 					this.email.ForeColor = System.Drawing.SystemColors.InactiveCaption;

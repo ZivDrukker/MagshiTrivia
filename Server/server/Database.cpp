@@ -76,7 +76,7 @@ vector<Question*> DataBase::initQuestions(int num)
 		int rngNum = (rand() % 4) + 1;
 		string* line = _tableSave[i];
 
-		switch (rngNum)
+		switch (rngNum)//generating random spot for correct answer
 		{
 		case 1:
 			qs->push_back(new Question(i, line[1], line[2], line[3], line[4], line[5], rngNum));

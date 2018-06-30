@@ -119,7 +119,7 @@ namespace client
 
 				//checking answer
 				if (input == "1140")
-				{
+				{//send as admin
 					WaitForRoom waiting = new WaitForRoom(sock, true, -1, roomName.Text, this.questionNum.Text, this.timePerQuestion.Text, this.playersNum.Text);//	-1 will be a default value for gameID
 					this.Hide();
 					waiting.ShowDialog();

@@ -165,6 +165,7 @@ void Game::sendQuestionsToAllUsers()
 		Question* q = _questions.front();
 		string* ans = q->getAnswers();
 		string msg = "118###" + q->getQuestion();
+
 		for (unsigned int i = 0; i < 4; i++)
 		{
 			msg += "###";
@@ -174,7 +175,6 @@ void Game::sendQuestionsToAllUsers()
 		for (unsigned int i = 0; i < _players.size(); i++)
 		{
 			::send(_players[i]->getSocket(), encrypto(msg.c_str(), _players[i]->getSocket()), msg.size(), 0);
-
 		}
 	}
 	else

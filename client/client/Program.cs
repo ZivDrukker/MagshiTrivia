@@ -12,7 +12,6 @@ namespace client
 {
     static class Program
     {
-        //key is 1337 % UcfSecretEnc % 42 = 1337 % 1178 % 42= 159 % 42 = 33
         public static int key = 0;
         public static bool notClosed = true;
         /// <summary>
@@ -37,7 +36,7 @@ namespace client
         }
 
         public static List<string> StrSplit(string str, char ch)
-        {
+        {//split messages to get rid of '##'
             string[] values = str.Split(ch);
             List<string> toRet = new List<string>();
 
@@ -53,7 +52,7 @@ namespace client
         }
 
         public static string Encrypto(string msg)
-        {
+        {//same as server
             string t = "";
             for (int i = 0; i < msg.Length; i++)
             {
@@ -72,7 +71,7 @@ namespace client
         }
 
         public static string Decrypto(string msg)
-        {
+        {//same as server
             string t = "";
 
             for (int i = 0; i < msg.Length; i++)
@@ -91,7 +90,7 @@ namespace client
         }
 
         public static void SendMsg(NetworkStream sock, string msg)
-        {
+        {//send the messages for the whole program
             var log = Application.OpenForms.OfType<LogForm>().Single();
             log.Invoke((MethodInvoker)delegate { log.SetLog("Sent: " + msg + "\n"); });
 
@@ -101,18 +100,12 @@ namespace client
             }
 
             byte[] buffer = new ASCIIEncoding().GetBytes(msg);
-            //byte[] buffer = Encoding.Default.GetBytes(msg);
-            //byte[] buffer = new byte[4096];
-            //for(int i = 0; i < msg.Length; i++)
-            //{
-            //    buffer[i] = Convert.ToByte(msg[i]);
-            //}
             sock.Write(buffer, 0, msg.Length);
             sock.Flush();
         }
 
         public static string RecvMsg(NetworkStream sock)
-        {
+        {//recieve the messages for all the program
             bool endFound = false;
 
             //recive signin answer
@@ -140,7 +133,7 @@ namespace client
         }
 
         public static void sendAndRecieveKey(NetworkStream sock)
-        {
+        {//same as server's explanation
             int g = 0, p = 0;
 
             while (key == 0)

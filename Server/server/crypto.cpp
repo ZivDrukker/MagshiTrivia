@@ -1,9 +1,9 @@
 #include "crypto.h"
 
 
-
 map<SOCKET, int> keys;
 
+//checks if num is prime
 bool isPrime(int x)
 {
 	int i = 3;
@@ -29,21 +29,22 @@ bool isPrime(int x)
 
 }
 
+//encrypts a given message
 const char* encrypto(std::string msg, SOCKET sock)
 {
 	if (keys.find(sock) != keys.end())
 	{
-		int key = keys[sock];
+		int key = keys[sock];//find the key per client
 		std::string t = "";
 		for (unsigned int i = 0; i < msg.length(); i++)
 		{
-			t += char(int(msg[i]) ^ key);
+			t += char(int(msg[i]) ^ key);//building the string by XORing with key
 		}
 
 		char *a = new char[t.size() + 1];
 
-		a[t.size()] = 0;
-		memcpy(a, t.c_str(), t.size());
+		a[t.size()] = 0;//making it a string
+		memcpy(a, t.c_str(), t.size());//actually puting the encrypted text into a
 
 		return a;
 	}
@@ -58,6 +59,7 @@ const char* encrypto(std::string msg, SOCKET sock)
 	return a;
 }
 
+//decrypts a given message
 char* decrypto(std::string msg, SOCKET sock)
 {
 	if (keys.find(sock) != keys.end())
@@ -66,7 +68,7 @@ char* decrypto(std::string msg, SOCKET sock)
 		std::string t = "";
 		for (unsigned int i = 0; i < msg.length(); i++)
 		{
-			t += char(int(msg[i]) ^ key);
+			t += char(int(msg[i]) ^ key);//XORing the message to get the plain message again
 		}
 
 		char *a = new char[t.size() + 1];
@@ -85,8 +87,7 @@ char* decrypto(std::string msg, SOCKET sock)
 	return a;
 }
 
-
-
+//transfering the initial key between the server and client
 void sendAndRecieveKey(SOCKET sock)
 {
 	srand(time(NULL));
@@ -94,28 +95,28 @@ void sendAndRecieveKey(SOCKET sock)
 
 	while (s1 == 0)
 	{
+		//finding two public keys
+		cout << "Calculating two public keys - prime numbers" << endl;
 		while (!isPrime(g))
 		{
 			g = rand();
-			cout << g << endl;
 		}
 
 		while (!isPrime(p))
 		{
 			p = rand();
-			cout << p << endl;
 		}
 
-		string toSend = std::to_string(g) + "#" + std::to_string(p);
+		string toSend = std::to_string(g) + "#" + std::to_string(p);//giving client public keys
 		::send(sock, toSend.c_str(), toSend.length(), 0);
 
 		int r1 = rand();
 
-		int num1 = int(pow(g, r1)) % p;
+		int num1 = int(pow(g, r1)) % p;//send num for client to retrieve key from
 
-		::send(sock, std::to_string(num1).c_str(), std::to_string(num1).length(), 0);
+		::send(sock, std::to_string(num1).c_str(), std::to_string(num1).length(), 0);//sending the generated number
 
-		string num2Str = Helper::getStringPartFromSocket(sock, 4096);
+		string num2Str = Helper::getStringPartFromSocket(sock, 4096);//getting the client's generated num
 		bool endFound = false;
 		for (unsigned int i = 0; i < num2Str.length() && !endFound; i++)
 		{
@@ -128,11 +129,11 @@ void sendAndRecieveKey(SOCKET sock)
 
 		int num2 = stoi(num2Str);
 
-		s1 = int(pow(num2, r1)) % p;
-		s1 = s1 % 100;
+		s1 = int(pow(num2, r1)) % p;//finding the key buy the private key and the client's generated number
+		s1 = s1 % 100;//restricting key to 100 for faster debugging runtime
 	}
 
 	cout << "key: " << abs(s1) << endl;
 
-	keys.insert(std::make_pair(sock, abs(s1)));
+	keys.insert(std::make_pair(sock, abs(s1)));//save key with client's socket
 }

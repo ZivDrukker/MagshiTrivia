@@ -102,7 +102,7 @@ namespace client
 					reply = Program.StrSplit(input, '#');
 
 					if (reply[0] == "1100")
-					{
+					{//send not as admin
 						WaitForRoom waiting = new WaitForRoom(sock, false, Int32.Parse(roomsDic[rooms.Text]), rooms.Text, reply[1], reply[2], "");
 						this.Hide();
 						waiting.ShowDialog();
@@ -120,7 +120,7 @@ namespace client
 				else
 				{
 					if (reply[0] == "1100")
-					{
+					{//send not as admin
 						WaitForRoom waiting = new WaitForRoom(sock, false, Int32.Parse(roomsDic[rooms.Text]), rooms.Text, reply[1], reply[2], "");
 						this.Hide();
 						waiting.ShowDialog();
@@ -177,7 +177,7 @@ namespace client
 
 					this.alert.Text = message;
 				}
-				else if (reply[0] == "1080")//	DOESN'T EXIST IN SERVER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+				else if (reply[0] == "1080")
 				{
 					this.alert.Text = "Room doesn't exist!";
 				}

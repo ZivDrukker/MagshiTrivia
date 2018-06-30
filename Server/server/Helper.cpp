@@ -71,7 +71,7 @@ char* Helper::getPartFromSocket(SOCKET sc, int bytesNum, int flags)
 	string msg = decrypto(data, sc);
 
 	bool end = false;
-	for (int i = 0; i < msg.length() && !end; i++)
+	for (unsigned int i = 0; i < msg.length() && !end; i++)
 	{
 		if (msg[i] == 'Í')
 		{

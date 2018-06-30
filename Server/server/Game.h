@@ -20,13 +20,13 @@ public:
 	bool leaveGame(User*);
 
 private:
-	void sendQuestionsToAllUsers();
 
+	void sendQuestionsToAllUsers();
 	vector<Question*> _questions;
 	vector<User*> _players;
 	int _questions_no;
 	int _currQuestionIndex;
-	DataBase* _db;// needed to be & but not working
+	DataBase* _db;																										// needed to be & but not working
 	map<string, int> _results;
 	unsigned int _currentTurnAnswer;
 	User* _admin;

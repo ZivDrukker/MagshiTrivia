@@ -25,7 +25,6 @@ public:
 	int getMaxID();
 
 
-
 private:
 	static int callbackCount(void*, int, char**, char**);
 	static int callback(void*, int, char**, char**);

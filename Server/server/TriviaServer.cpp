@@ -8,6 +8,7 @@ TriviaServer::TriviaServer()
 	{
 		throw std::exception(__FUNCTION__ " - socket");
 	}
+
 	_db = new DataBase();
 	_roomIdSequence = _db->getMaxID();
 }
@@ -99,7 +100,7 @@ void TriviaServer::clientHandler(SOCKET sock)
 	{
 		while (code != EXIT)
 		{
-			if (code != 0)
+			if (code > 100 && code < 300)
 			{
 				addReceivedMessages(buildReceivedMessage(sock, code));
 			}
@@ -131,6 +132,7 @@ User* TriviaServer::handleSignIn(ReceivedMessage* msg)
 				return nullptr;
 			}
 		}
+
 		::send(msg->getSock(), encrypto("1020", msg->getSock()), 4, 0);
 		return new User(string(unameAndPass[0]), msg->getSock());
 	}
@@ -263,6 +265,7 @@ void TriviaServer::handleGetPersonalStatus(ReceivedMessage* msg)
 void TriviaServer::handleReceivedMessages()
 {
 	User* usr;
+
 	while (true)
 	{
 

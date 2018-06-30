@@ -170,10 +170,10 @@ namespace client
 		}
 
 		private void usersList()
-		{
+		{//handle all recieved messages in form to avoid bugs and to update the users list in one place
 			try
 			{
-				while (Program.notClosed)
+				while (Program.notClosed)//not to access after form closed and thread still running
 				{
 					string input = Program.RecvMsg(sock);
 

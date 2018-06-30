@@ -181,6 +181,5 @@ namespace client
 
 			Program.SendMsg(sock, msg);
 		}
-
     }
 }
